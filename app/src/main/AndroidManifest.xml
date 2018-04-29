@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.dell.organizerkorepetytora">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <!-- <activity android:name="com.example.dell.organizerkorepetytora.MainActivity"> -->
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".First_Screen_Activity" />
+        <activity android:name=".Add_User_Activity" />
+        <activity android:name="lesson.Lesson_Add_To_Group_Activity" />
+        <activity android:name="lesson.Add_Lesson_Screen_Activity" />
+        <activity android:name=".List_Student_Payment_Activity" />
+        <activity android:name=".Payment_Screen_Activity" />
+        <activity android:name=".Add_Payment_Activity" />
+        <activity android:name=".List_Group_1c_Activity" />
+        <activity android:name=".Group_Add_Edit_2c_Activity" />
+        <activity android:name=".Group_Add_Edit_Params_2_Activity" />
+        <activity android:name=".List_Lessons_Screen_Activity" />
+        <activity android:name=".Lesson_Show_3c_Activity" />
+        <activity android:name=".Students_1b_Activity" />
+        <activity android:name=".Student_Add_Edit_2b_Activity" />
+        <activity android:name=".List_Notes_Activity" />
+        <activity android:name=".Add_Edit_Note_2a_Activity" />
+        <activity android:name=".ViewNote" />
+        <activity android:name=".ViewStudent" />
+        <activity android:name=".LessonEditActivity" />
+        <activity android:name=".AddNewGroupActivity"></activity>
+    </application>
+
+</manifest>
