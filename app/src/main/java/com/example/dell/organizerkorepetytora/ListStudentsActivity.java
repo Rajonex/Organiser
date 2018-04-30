@@ -8,10 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,11 +22,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import sends.Note;
 import sends.Student;
 import utils.Adress;
 
-public class Students_1b_Activity extends AppCompatActivity {
+public class ListStudentsActivity extends AppCompatActivity {
 
     ImageButton buttonHome;
     ImageButton buttonAdd;
@@ -43,7 +40,7 @@ public class Students_1b_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.students_1b);
+        setContentView(R.layout.list_students);
 
         toolbar = (Toolbar) findViewById(R.id.appBarHome);
         setSupportActionBar(toolbar);
@@ -84,7 +81,8 @@ public class Students_1b_Activity extends AppCompatActivity {
         listStudents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                Intent appInfo = new Intent(Students_1b_Activity.this, ViewStudent.class);
+                Intent appInfo = new Intent(ListStudentsActivity.this, ViewStudent.class);
+                //TODO zmienic ViewStudent na viewText i dodac osobno EditStudent
 
                 String name = ((Student) adapter.getItemAtPosition(position)).getFirstname();
                 String lastName = ((Student) adapter.getItemAtPosition(position)).getLastname();
@@ -118,7 +116,7 @@ public class Students_1b_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Students_1b_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(ListStudentsActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -132,7 +130,7 @@ public class Students_1b_Activity extends AppCompatActivity {
                 editor.putString("token", token);
                 editor.commit();
 
-                startActivity(new Intent(Students_1b_Activity.this, Student_Add_Edit_2b_Activity.class));
+                startActivity(new Intent(ListStudentsActivity.this, AddStudentActivity.class));
 
             }
 

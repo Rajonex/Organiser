@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,7 +19,7 @@ import sends.Group;
 import sends.Student;
 import utils.Adress;
 
-public class Group_Add_Edit_2c_Activity extends AppCompatActivity {
+public class GroupOptionsActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -34,7 +33,7 @@ public class Group_Add_Edit_2c_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.group_add_edit_2c);
+        setContentView(R.layout.group_options);
 
         initializeElements();
         initializeActions();
@@ -61,7 +60,7 @@ public class Group_Add_Edit_2c_Activity extends AppCompatActivity {
                 SharedPreferences.Editor editor = teacherToken.edit();
                 editor.putString("token", token);
                 editor.commit();
-                startActivity(new Intent(Group_Add_Edit_2c_Activity.this, List_Lessons_Screen_Activity.class));
+                startActivity(new Intent(GroupOptionsActivity.this, ListGroupLessonsActivity.class));
             }
         });
 
@@ -106,7 +105,7 @@ public class Group_Add_Edit_2c_Activity extends AppCompatActivity {
                     List<Student> studentList = singleGroup.getStudents();
                     double rate = singleGroup.getRate();
 
-                    Intent appInfo = new Intent(Group_Add_Edit_2c_Activity.this, Group_Add_Edit_Params_2_Activity.class);
+                    Intent appInfo = new Intent(GroupOptionsActivity.this, EditGroupActivity.class);
 
                     Bundle bundle = new Bundle();
                     bundle.putString("name", name);

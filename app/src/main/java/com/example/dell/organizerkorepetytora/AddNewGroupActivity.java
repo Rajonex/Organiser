@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +30,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Ack;
 import sends.Group;
 import sends.GroupCalendar;
-import sends.Note;
 import sends.Student;
 import utils.Adress;
 
@@ -99,7 +97,7 @@ public class AddNewGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(AddNewGroupActivity.this, First_Screen_Activity.class));
+                startActivity(new Intent(AddNewGroupActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -145,7 +143,7 @@ public class AddNewGroupActivity extends AppCompatActivity {
                 Ack ack = response.body();
                 if(ack.isConfirm())
                 {
-                    startActivity(new Intent(AddNewGroupActivity.this, List_Group_1c_Activity.class));
+                    startActivity(new Intent(AddNewGroupActivity.this, ListGroupActivity.class));
                 } else{
 //                    txtView.setText("Nie dodano grupy, przyczyny - np. wymienieni studenci nalezacy do grupy nie istnieja, niepoprawny token nauczyciela lub inne");
                 }

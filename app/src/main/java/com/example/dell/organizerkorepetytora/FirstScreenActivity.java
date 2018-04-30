@@ -8,10 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import lesson.Lesson_Add_To_Group_Activity;
+import lesson.ListGroupInLessonActivity;
 
 
-public class First_Screen_Activity extends AppCompatActivity {
+public class FirstScreenActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -32,7 +32,7 @@ public class First_Screen_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(First_Screen_Activity.this, Lesson_Add_To_Group_Activity.class));
+                startActivity(new Intent(FirstScreenActivity.this, ListGroupInLessonActivity.class));
             }
         });
 
@@ -41,7 +41,7 @@ public class First_Screen_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(First_Screen_Activity.this, List_Student_Payment_Activity.class));
+                startActivity(new Intent(FirstScreenActivity.this, ListStudentPaymentActivity.class));
             }
         });
 
@@ -51,7 +51,7 @@ public class First_Screen_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(First_Screen_Activity.this, List_Group_1c_Activity.class));
+                startActivity(new Intent(FirstScreenActivity.this, ListGroupActivity.class));
             }
         });
 
@@ -60,7 +60,7 @@ public class First_Screen_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(First_Screen_Activity.this, Students_1b_Activity.class));
+                startActivity(new Intent(FirstScreenActivity.this, ListStudentsActivity.class));
             }
         });
 
@@ -69,7 +69,7 @@ public class First_Screen_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(First_Screen_Activity.this, List_Notes_Activity.class));
+                startActivity(new Intent(FirstScreenActivity.this, ListNotesActivity.class));
             }
         });
 
@@ -83,7 +83,7 @@ public class First_Screen_Activity extends AppCompatActivity {
                 editor.clear();
                 editor.commit();
 
-                startActivity(new Intent(First_Screen_Activity.this, MainActivity.class));
+                startActivity(new Intent(FirstScreenActivity.this, MainActivity.class));
             }
         });
     }

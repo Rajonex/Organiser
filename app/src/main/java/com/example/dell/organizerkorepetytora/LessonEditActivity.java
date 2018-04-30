@@ -75,7 +75,7 @@ public class LessonEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(LessonEditActivity.this, First_Screen_Activity.class));
+                startActivity(new Intent(LessonEditActivity.this, FirstScreenActivity.class));
 
             }
 

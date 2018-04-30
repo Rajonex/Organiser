@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -26,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Note;
 import utils.Adress;
 
-public class List_Notes_Activity extends AppCompatActivity {
+public class ListNotesActivity extends AppCompatActivity {
 
 
     public static final String PREFS = "teacherToken";
@@ -93,7 +92,7 @@ public class List_Notes_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(List_Notes_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(ListNotesActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -111,7 +110,7 @@ public class List_Notes_Activity extends AppCompatActivity {
                 editor.putString("token", token);
                 editor.commit();
 
-                startActivity(new Intent(List_Notes_Activity.this, Add_Edit_Note_2a_Activity.class));
+                startActivity(new Intent(ListNotesActivity.this, AddNoteActivity.class));
 
 
             }
@@ -120,7 +119,7 @@ public class List_Notes_Activity extends AppCompatActivity {
         listNotes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                Intent appInfo = new Intent(List_Notes_Activity.this, ViewNote.class);
+                Intent appInfo = new Intent(ListNotesActivity.this, ViewNote.class);
                 System.out.println(((Note)adapter.getItemAtPosition(position)).getTitle());
                 String title = ((Note) adapter.getItemAtPosition(position)).getTitle();
                 String text = ((Note) adapter.getItemAtPosition(position)).getText();

@@ -19,7 +19,7 @@ import sends.Ack;
 import sends.Student;
 import utils.Adress;
 
-public class Student_Add_Edit_2b_Activity extends AppCompatActivity {
+public class AddStudentActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -34,7 +34,7 @@ public class Student_Add_Edit_2b_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.student_add_edit_2b);
+        setContentView(R.layout.add_student);
 
         InitializeElements();
         InitializeActions();
@@ -71,7 +71,7 @@ public void InitializeElements()
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Student_Add_Edit_2b_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(AddStudentActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -117,7 +117,7 @@ public void InitializeElements()
                 if(ack != null) {
 
                     if (ack.isConfirm()) {
-                        startActivity(new Intent(Student_Add_Edit_2b_Activity.this, Students_1b_Activity.class));
+                        startActivity(new Intent(AddStudentActivity.this, ListStudentsActivity.class));
                     }
                 }
 

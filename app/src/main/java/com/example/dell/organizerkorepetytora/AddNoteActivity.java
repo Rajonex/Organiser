@@ -6,10 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import rest.NoteRetrofitService;
 import retrofit2.Call;
@@ -21,7 +19,7 @@ import sends.Ack;
 import sends.Note;
 import utils.Adress;
 
-public class Add_Edit_Note_2a_Activity extends AppCompatActivity {
+public class AddNoteActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -35,7 +33,7 @@ public class Add_Edit_Note_2a_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_edit_note_2a);
+        setContentView(R.layout.add_note);
 
         initializeElements();
         initializeActions();
@@ -65,7 +63,7 @@ public class Add_Edit_Note_2a_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Add_Edit_Note_2a_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(AddNoteActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -112,7 +110,7 @@ public class Add_Edit_Note_2a_Activity extends AppCompatActivity {
                 {
                     if(ack.isConfirm())
                     {
-                        startActivity(new Intent(Add_Edit_Note_2a_Activity.this, List_Notes_Activity.class));
+                        startActivity(new Intent(AddNoteActivity.this, ListNotesActivity.class));
                     }
                     else
                     {

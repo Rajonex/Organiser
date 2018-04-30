@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:fillViewport="false">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:orientation="vertical"
@@ -22,7 +27,7 @@
     <TextView
         android:id="@+id/lesson_topic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="128dp"
         android:layout_weight="2"
         android:ems="10"
         android:inputType="textPersonName"
@@ -41,12 +46,11 @@
     <TextView
         android:id="@+id/lesson_data"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="143dp"
         android:layout_weight="2"
         android:ems="10"
         android:inputType="textPersonName"
-        android:textColor="#000000"
-        />
+        android:textColor="#000000" />
 
     <TextView
         android:id="@+id/textView14"
@@ -61,10 +65,11 @@
     <TextView
         android:id="@+id/lesson_date"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="91dp"
         android:layout_weight="2"
         android:ems="1"
         android:inputType="textPersonName"
-        android:textColor="#000000"/>
+        android:textColor="#000000" />
 
 </LinearLayout>
+</ScrollView>

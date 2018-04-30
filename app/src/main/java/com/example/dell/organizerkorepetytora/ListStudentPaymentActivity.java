@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-public class List_Student_Payment_Activity extends AppCompatActivity {
+public class ListStudentPaymentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class List_Student_Payment_Activity extends AppCompatActivity {
         listPayment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                Intent appInfo = new Intent(List_Student_Payment_Activity.this, Payment_Screen_Activity.class);
+                Intent appInfo = new Intent(ListStudentPaymentActivity.this, PaymentActivity.class);
                 startActivity(appInfo);
             }
         });
@@ -43,7 +43,7 @@ public class List_Student_Payment_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(List_Student_Payment_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(ListStudentPaymentActivity.this, FirstScreenActivity.class));
 
             }
 

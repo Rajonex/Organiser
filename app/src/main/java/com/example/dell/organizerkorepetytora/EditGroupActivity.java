@@ -13,11 +13,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import lesson.Add_Lesson_Screen_Activity;
 import rest.StudentRetrofitService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Student;
 import utils.Adress;
 
-public class Group_Add_Edit_Params_2_Activity extends AppCompatActivity {
+public class EditGroupActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -44,7 +42,7 @@ public class Group_Add_Edit_Params_2_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.group_add_edit_params_2);
+        setContentView(R.layout.edit_group);
 
         Bundle bundle = getIntent().getExtras();
         name = bundle.getString("name");
@@ -89,7 +87,7 @@ public class Group_Add_Edit_Params_2_Activity extends AppCompatActivity {
 //        boolean activity) {
 //        listOfStudents.add(new Student(1, "student", "nazwisko", "111", "aaaa", token, false));
 
-        listStudents.setAdapter(new Group_Add_Edit_Params_2_Activity.CheckboxAdapter(listOfStudents));
+        listStudents.setAdapter(new EditGroupActivity.CheckboxAdapter(listOfStudents));
         listStudents.setItemsCanFocus(false);
         listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
@@ -100,7 +98,7 @@ public class Group_Add_Edit_Params_2_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Group_Add_Edit_Params_2_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(EditGroupActivity.this, FirstScreenActivity.class));
 
             }
 

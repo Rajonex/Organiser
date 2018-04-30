@@ -97,7 +97,7 @@ public class ViewStudent extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(ViewStudent.this, First_Screen_Activity.class));
+                startActivity(new Intent(ViewStudent.this, FirstScreenActivity.class));
 
             }
 
@@ -142,7 +142,7 @@ public class ViewStudent extends AppCompatActivity {
                 if(ack != null) {
 
                     if (ack.isConfirm()) {
-                        startActivity(new Intent(ViewStudent.this, Students_1b_Activity.class));
+                        startActivity(new Intent(ViewStudent.this, ListStudentsActivity.class));
                     }
                 }
 

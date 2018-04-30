@@ -5,11 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import rest.NoteRetrofitService;
 import retrofit2.Call;
@@ -81,7 +78,7 @@ public class ViewNote extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(ViewNote.this, First_Screen_Activity.class));
+                startActivity(new Intent(ViewNote.this, FirstScreenActivity.class));
 
             }
 
@@ -121,7 +118,7 @@ public class ViewNote extends AppCompatActivity {
                 if(ack != null) {
 
                     if (ack.isConfirm()) {
-                        startActivity(new Intent(ViewNote.this, List_Notes_Activity.class));
+                        startActivity(new Intent(ViewNote.this, ListNotesActivity.class));
                     }
                 }
 

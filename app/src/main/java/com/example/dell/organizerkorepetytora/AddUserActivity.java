@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import rest.TeacherRetrofitService;
 import retrofit2.Call;
@@ -21,7 +18,7 @@ import sends.ResultTeacher;
 import sends.Teacher;
 import utils.Adress;
 
-public class Add_User_Activity extends AppCompatActivity {
+public class AddUserActivity extends AppCompatActivity {
 
     Button buttonZatwierdz;
     EditText editTextUsername;
@@ -55,7 +52,7 @@ public class Add_User_Activity extends AppCompatActivity {
             public void onClick(View view) {
 
                 addTeacher();
-                startActivity(new Intent(Add_User_Activity.this, MainActivity.class));
+                startActivity(new Intent(AddUserActivity.this, MainActivity.class));
             }
         });
 

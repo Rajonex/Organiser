@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,10 +23,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Lesson;
 import sends.MiniLesson;
-import sends.Student;
 import utils.Adress;
 
-public class List_Lessons_Screen_Activity extends AppCompatActivity {
+public class ListGroupLessonsActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -40,7 +38,7 @@ public class List_Lessons_Screen_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_lessons_screen);
+        setContentView(R.layout.list_group_lessons);
 
         initializeElements();
         initializeActions();
@@ -119,7 +117,7 @@ public class List_Lessons_Screen_Activity extends AppCompatActivity {
                     String description = singleLesson.getDescription();
                     long date = singleLesson.getDate();
 
-                    Intent appInfo = new Intent(List_Lessons_Screen_Activity.this, Lesson_Show_3c_Activity.class);
+                    Intent appInfo = new Intent(ListGroupLessonsActivity.this, ViewLessonActivity.class);
 
                     Bundle bundle = new Bundle();
                     bundle.putString("topic", topic);

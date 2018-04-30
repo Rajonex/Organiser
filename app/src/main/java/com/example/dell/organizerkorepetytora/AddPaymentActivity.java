@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-public class Add_Payment_Activity extends AppCompatActivity {
+public class AddPaymentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class Add_Payment_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(Add_Payment_Activity.this, Payment_Screen_Activity.class));
+                startActivity(new Intent(AddPaymentActivity.this, PaymentActivity.class));
             }
         });
 
@@ -36,7 +36,7 @@ public class Add_Payment_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Add_Payment_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(AddPaymentActivity.this, FirstScreenActivity.class));
 
             }
 

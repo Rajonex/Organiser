@@ -6,15 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.sql.Date;
 
-public class Lesson_Show_3c_Activity extends AppCompatActivity {
+public class ViewLessonActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -33,7 +30,7 @@ public class Lesson_Show_3c_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lesson_show_3c);
+        setContentView(R.layout.view_lesson);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -79,7 +76,7 @@ public class Lesson_Show_3c_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Lesson_Show_3c_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(ViewLessonActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -93,7 +90,7 @@ public class Lesson_Show_3c_Activity extends AppCompatActivity {
                 editor.putString("token", token);
                 editor.commit();
 
-                Intent appInfo = new Intent(Lesson_Show_3c_Activity.this, LessonEditActivity.class);
+                Intent appInfo = new Intent(ViewLessonActivity.this, LessonEditActivity.class);
 
                 Bundle bundle = new Bundle();
                 bundle.putString("topic", topic);

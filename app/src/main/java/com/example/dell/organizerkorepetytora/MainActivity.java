@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.List;
 import rest.CalendarRetrofitService;
 import rest.GroupRetrofitService;
 import rest.LessonRetrofitService;
-import rest.NoteRetrofitService;
 import rest.StudentRetrofitService;
 import rest.TeacherRetrofitService;
 import sends.Ack;
@@ -35,8 +32,6 @@ import sends.GroupCalendar;
 import sends.Lesson;
 import sends.MiniGroup;
 import sends.MiniLesson;
-import sends.Note;
-import sends.ResultTeacher;
 import sends.Student;
 import sends.StudentPresent;
 import sends.Teacher;
@@ -125,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 //                getGroup();
 //                getMiniGroups();
 //                addGroup();
-//            startActivity(new Intent(MainActivity.this, Add_User_Activity.class));
+//            startActivity(new Intent(MainActivity.this, AddUserActivity.class));
             }
         });
     }
@@ -508,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
                     editor.commit();
 
                     txtView.setText(resultTeacher.getToken() + ":" + resultTeacher.getName());
-                    startActivity(new Intent(MainActivity.this, First_Screen_Activity.class));
+                    startActivity(new Intent(MainActivity.this, FirstScreenActivity.class));
 
                 } else // if password or name or both are not correctly
                 {

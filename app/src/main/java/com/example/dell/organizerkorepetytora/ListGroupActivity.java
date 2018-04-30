@@ -1,4 +1,4 @@
-package lesson;
+package com.example.dell.organizerkorepetytora;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,14 +8,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.example.dell.organizerkorepetytora.First_Screen_Activity;
-import com.example.dell.organizerkorepetytora.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,32 +22,30 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import sends.Group;
-import sends.Lesson;
 import sends.MiniGroup;
-import sends.Note;
 import utils.Adress;
 
-public class Lesson_Add_To_Group_Activity extends AppCompatActivity {
+public class ListGroupActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
     ListView listGroups;
     List<MiniGroup> listOfGroups;
-    ArrayAdapter<String> adapter;
     ImageButton buttonHome;
+    ImageButton buttonAdd;
     SharedPreferences teacherToken;
     String token;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lesson_add_to_group);
+        setContentView(R.layout.list_group);
 
-         initializeElements();
-         initializeActions();
+        initializeElements();
+        initializeActions();
+
+
+
     }
 
     public void initializeElements()
@@ -60,12 +54,15 @@ public class Lesson_Add_To_Group_Activity extends AppCompatActivity {
         teacherToken = getSharedPreferences(PREFS, 0);
         token = teacherToken.getString("token", "brak tokenu");
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.appBarHome);
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.appBarHomeAdd);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         buttonHome = (ImageButton)findViewById(R.id.button_home);
+        buttonAdd = (ImageButton) findViewById(R.id.button_add);
 
+        listGroups = (ListView)findViewById(R.id.list);
         listGroups = (ListView)findViewById(R.id.list);
 
         listOfGroups = new ArrayList<>();
@@ -79,7 +76,12 @@ public class Lesson_Add_To_Group_Activity extends AppCompatActivity {
         listGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
-                Intent appInfo = new Intent(Lesson_Add_To_Group_Activity.this, Add_Lesson_Screen_Activity.class);
+                Intent appInfo = new Intent(ListGroupActivity.this, GroupOptionsActivity.class);
+
+                SharedPreferences.Editor editor = teacherToken.edit();
+                editor.putString("token", token);
+                editor.commit();
+
                 startActivity(appInfo);
             }
         });
@@ -88,18 +90,22 @@ public class Lesson_Add_To_Group_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Lesson_Add_To_Group_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(ListGroupActivity.this, FirstScreenActivity.class));
 
             }
 
         });
 
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(ListGroupActivity.this, AddNewGroupActivity.class));
+
+            }
+
+        });
     }
-
-
-
-
-
 
     private void getMiniGroups()
     {

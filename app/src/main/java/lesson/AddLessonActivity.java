@@ -5,28 +5,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.dell.organizerkorepetytora.First_Screen_Activity;
-import com.example.dell.organizerkorepetytora.List_Notes_Activity;
+import com.example.dell.organizerkorepetytora.FirstScreenActivity;
 import com.example.dell.organizerkorepetytora.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import rest.LessonRetrofitService;
@@ -38,13 +31,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Ack;
 import sends.Lesson;
-import sends.Note;
 import sends.Student;
 import sends.StudentPresent;
 import utils.Adress;
 
 
-public class Add_Lesson_Screen_Activity extends AppCompatActivity {
+public class AddLessonActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -62,7 +54,7 @@ public class Add_Lesson_Screen_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_lesson_screen);
+        setContentView(R.layout.add_lesson);
 
         initializeElements();
         initializeActions();
@@ -103,7 +95,7 @@ public class Add_Lesson_Screen_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(Add_Lesson_Screen_Activity.this, First_Screen_Activity.class));
+                startActivity(new Intent(AddLessonActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -154,7 +146,7 @@ public class Add_Lesson_Screen_Activity extends AppCompatActivity {
                 {
                     if(ack.isConfirm())
                     {
-                       startActivity(new Intent(Add_Lesson_Screen_Activity.this, Lesson_Add_To_Group_Activity.class));
+                       startActivity(new Intent(AddLessonActivity.this, ListGroupInLessonActivity.class));
                     }
                     else
                     {
