@@ -33,7 +33,7 @@ import sends.GroupCalendar;
 import sends.Student;
 import utils.Adress;
 
-public class AddNewGroupActivity extends AppCompatActivity {
+public class AddGroupActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
@@ -54,7 +54,7 @@ public class AddNewGroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_new_group);
+        setContentView(R.layout.add_group);
 
 
         initializeElements();
@@ -78,15 +78,14 @@ public class AddNewGroupActivity extends AppCompatActivity {
         name = (EditText) findViewById(R.id.add_group_name);
         payment = (EditText) findViewById(R.id.add_group_payment);
 
-        listStudents = (ListView)findViewById(R.id.lesson_attendance_list);
+        listStudents = (ListView) findViewById(R.id.lesson_attendance_list);
 
 
-        listOfStudents = new ArrayList<>();
-        getAllStudents();
+        getAllStudents(this);
 
-        listStudents.setAdapter(new AddNewGroupActivity.CheckboxAdapter(listOfStudents, this));
-        listStudents.setItemsCanFocus(false);
-        listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+//        listStudents.setAdapter(new AddGroupActivity.CheckboxAdapter(listOfStudents, this));
+//        listStudents.setItemsCanFocus(false);
+//        listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
     }
 
@@ -97,7 +96,7 @@ public class AddNewGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(AddNewGroupActivity.this, FirstScreenActivity.class));
+                startActivity(new Intent(AddGroupActivity.this, FirstScreenActivity.class));
 
             }
 
@@ -109,13 +108,14 @@ public class AddNewGroupActivity extends AppCompatActivity {
 
                 String groupName = name.getText().toString();
                 String groupPayment = payment.getText().toString();
-                List<Student> studentsInGroup = ((CheckboxAdapter)listStudents.getAdapter()).getCheckedStudents();
+                List<Student> studentsInGroup = ((CheckboxAdapter) listStudents.getAdapter()).getCheckedStudents();
+
 //                List<Student> studentsInGroup = (new CheckboxAdapter(listOfStudents)).getCheckedStudents();
                 System.out.println(studentsInGroup);
 
                 Group group = new Group(1L, groupName, studentsInGroup, Double.parseDouble(groupPayment), token, true, new ArrayList<GroupCalendar>());
 
-                //addGroup(group);
+                addGroup(group);
 
 
             }
@@ -124,16 +124,10 @@ public class AddNewGroupActivity extends AppCompatActivity {
 
     }
 
-    private void addGroup(Group group)
-    {
+    private void addGroup(Group group) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         GroupRetrofitService groupRetrofitService = retrofit.create(GroupRetrofitService.class);
-
-//        List<Student> students = new ArrayList<>();
-//        students.add(new Student(1L, "Jarek", "Niemam", "0700", "jarekmail@mail.com", "e2e42a07-5508-33f8-b67f-5eb252581f6d", true));
-
-       // Group group = new Group(1L, "GrupaTest", students, 35.0, "e2e42a07-5508-33f8-b67f-5eb252581f6d", true, new ArrayList<GroupCalendar>());
 
         Call<Ack> groupCall = groupRetrofitService.addGroup(group);
 
@@ -141,10 +135,9 @@ public class AddNewGroupActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Ack> call, Response<Ack> response) {
                 Ack ack = response.body();
-                if(ack.isConfirm())
-                {
-                    startActivity(new Intent(AddNewGroupActivity.this, ListGroupActivity.class));
-                } else{
+                if (ack.isConfirm()) {
+                    startActivity(new Intent(AddGroupActivity.this, ListGroupActivity.class));
+                } else {
 //                    txtView.setText("Nie dodano grupy, przyczyny - np. wymienieni studenci nalezacy do grupy nie istnieja, niepoprawny token nauczyciela lub inne");
                 }
 
@@ -157,8 +150,7 @@ public class AddNewGroupActivity extends AppCompatActivity {
         });
     }
 
-    private void getAllStudents()
-    {
+    private void getAllStudents(Context context) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         StudentRetrofitService studentRetrofitService = retrofit.create(StudentRetrofitService.class);
@@ -171,24 +163,24 @@ public class AddNewGroupActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Student>> call, Response<List<Student>> response) {
                 List<Student> students = response.body();
-                if(students != null)
-                {
-                    if(students.size() > 1)
-                    {
-                        for(Student student : students)
-                        {
-                            listOfStudents.add(student);
+                if (students != null) {
 
-                        }
+
+                    listOfStudents = students;
+                    System.out.println(students.get(1).getFirstname());
+//                        listOfStudents = new ArrayList<>();
+//                        for(Student student : students)
+//                        {
+//                            listOfStudents.add(student);
+//
+//                        }
+                    listStudents.setAdapter(new AddGroupActivity.CheckboxAdapter(listOfStudents, context));
+                    listStudents.setItemsCanFocus(false);
+                    listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 //                        ((CheckboxAdapter)listStudents.getAdapter()).changeData(listOfStudents);
 //                        txtView.setText(students.get(0).getLastname() + "+" + students.get(1).getLastname());
-                    }
-                    else
-                    {
-                        //txtView.setText("No size");
-                    }
-                } else
-                {
+
+                } else {
 //                    txtView.setText("NULL list");
                 }
             }
@@ -201,12 +193,10 @@ public class AddNewGroupActivity extends AppCompatActivity {
     }
 
 
-    static class ViewHolder
-    {
+    static class ViewHolder {
         CheckBox checkBox;
         TextView text;
     }
-
 
 
     public class CheckboxAdapter extends BaseAdapter {
@@ -227,8 +217,7 @@ public class AddNewGroupActivity extends AppCompatActivity {
             this.context = context;
         }
 
-        public List<Student> getCheckedStudents()
-        {
+        public List<Student> getCheckedStudents() {
             return selectedStudents;
         }
 
@@ -246,10 +235,6 @@ public class AddNewGroupActivity extends AppCompatActivity {
         public long getItemId(int position) {
             return position;
         }
-
-//        public boolean isChecked(int position) {
-//            return students.get(position).;
-//        }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -270,29 +255,38 @@ public class AddNewGroupActivity extends AppCompatActivity {
                 viewHolder.text = (TextView) rowView.findViewById(R.id.rowTextView);
 
                 rowView.setTag(viewHolder);
-            } else
-            {
+            } else {
                 viewHolder = (ViewHolder) rowView.getTag();
             }
 
-//            viewHolder.checkBox.setChecked(students.get(position).checked);
-
             viewHolder.checkBox.setTag(position);
 
-            viewHolder.checkBox.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View view)
-                {
-                    selectedStudents.add(getItem(position));
 
-                }
-            });
-//            TextView name = (TextView) convertView.findViewById(R.id.checkedTextView1);
-//            name.setText(getItem(position).getFirstname() + " " + getItem(position).getLastname());
+            viewHolder.checkBox.setOnClickListener(new AdapterOnClickListener(viewHolder, position));
 
-//
+            viewHolder.text.setText(getItem(position).getFirstname() + " " + getItem(position).getLastname());
+
+
             return rowView;
+        }
+
+        private class AdapterOnClickListener implements View.OnClickListener{
+            ViewHolder viewHolder;
+            int position;
+            public AdapterOnClickListener(ViewHolder viewHolder, int position)
+            {
+                this.viewHolder = viewHolder;
+                this.position = position;
+            }
+
+            @Override
+            public void onClick(View v) {
+                if (viewHolder.checkBox.isChecked()) {
+                    selectedStudents.add(getItem(position));
+                } else {
+                    selectedStudents.remove(getItem(position));
+                }
+            }
         }
     }
 }

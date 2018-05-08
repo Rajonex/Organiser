@@ -6,6 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import sends.Ack;
@@ -26,4 +27,7 @@ public interface GroupRetrofitService {
 
     @GET("group")
     Call<Group> getGroup(@Query("id") long id, @Query("token") String token);
+
+    @PUT("group")
+    Call<Ack> updateGroup(@Body Group group);
 }

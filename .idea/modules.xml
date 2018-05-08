@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/OrganizerKorepetytora.iml" filepath="$PROJECT_DIR$/OrganizerKorepetytora.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Organiser2.iml" filepath="$PROJECT_DIR$/Organiser2.iml" />
+      <module fileurl="file://C:\workspace_android\Organiser2\OrganizerKorepetytora.iml" filepath="C:\workspace_android\Organiser2\OrganizerKorepetytora.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

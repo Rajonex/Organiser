@@ -26,6 +26,7 @@ public class GroupOptionsActivity extends AppCompatActivity {
     SharedPreferences teacherToken;
     String token;
     Group singleGroup;
+    long id;
 
     Button buttonEditLesson;
     Button buttonShowLesson;
@@ -34,6 +35,9 @@ public class GroupOptionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.group_options);
+
+        Bundle bundle = getIntent().getExtras();
+        id = bundle.getLong("id");
 
         initializeElements();
         initializeActions();
@@ -60,7 +64,14 @@ public class GroupOptionsActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = teacherToken.edit();
                 editor.putString("token", token);
                 editor.commit();
-                startActivity(new Intent(GroupOptionsActivity.this, ListGroupLessonsActivity.class));
+                Intent appInfo = new Intent(GroupOptionsActivity.this, ListGroupLessonsActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putLong("id", id);
+                appInfo.putExtras(bundle);
+
+
+                startActivity(appInfo);
             }
         });
 
@@ -75,7 +86,17 @@ public class GroupOptionsActivity extends AppCompatActivity {
                 editor.putString("token", token);
                 editor.commit();
 
-                getGroup();
+                Intent appInfo = new Intent(GroupOptionsActivity.this, EditGroupActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putLong("id", id);
+                appInfo.putExtras(bundle);
+
+
+                startActivity(appInfo);
+
+
+//                getGroup();
 
             }
         });
@@ -88,7 +109,7 @@ public class GroupOptionsActivity extends AppCompatActivity {
 
         GroupRetrofitService groupRetrofitService = retrofit.create(GroupRetrofitService.class);
 
-        long id = 1L;
+        //long id = id;
         //String token = "e2e42a07-5508-33f8-b67f-5eb252581f6d";
 
         Call<Group> groupCall = groupRetrofitService.getGroup(id, token);
@@ -101,21 +122,7 @@ public class GroupOptionsActivity extends AppCompatActivity {
                 {
                         singleGroup = group;
 
-                    String name = singleGroup.getName();
-                    List<Student> studentList = singleGroup.getStudents();
-                    double rate = singleGroup.getRate();
 
-                    Intent appInfo = new Intent(GroupOptionsActivity.this, EditGroupActivity.class);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", name);
-                    bundle.putDouble("rate", rate);
-                    //bundle.putList<Student>
-
-                    appInfo.putExtras(bundle);
-
-
-                    startActivity(appInfo);
                 }
             }
 

@@ -76,7 +76,19 @@ public class ListGroupInLessonActivity extends AppCompatActivity {
         listGroups.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
+
+
                 Intent appInfo = new Intent(ListGroupInLessonActivity.this, AddLessonActivity.class);
+                SharedPreferences.Editor editor = teacherToken.edit();
+                editor.putString("token", token);
+                editor.commit();
+
+                long id = ((MiniGroup) adapter.getItemAtPosition(position)).getId();
+                Bundle bundle = new Bundle();
+                bundle.putLong("id", id);
+
+                appInfo.putExtras(bundle);
+
                 startActivity(appInfo);
             }
         });

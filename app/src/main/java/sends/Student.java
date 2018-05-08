@@ -81,4 +81,34 @@ public class Student {
 
 	public Student() {
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Student)) return false;
+
+		Student student = (Student) o;
+
+		if (getId() != student.getId()) return false;
+		if (isActivity() != student.isActivity()) return false;
+		if (!getFirstname().equals(student.getFirstname())) return false;
+		if (!getLastname().equals(student.getLastname())) return false;
+		if (getPhone() != null ? !getPhone().equals(student.getPhone()) : student.getPhone() != null)
+			return false;
+		if (getEmail() != null ? !getEmail().equals(student.getEmail()) : student.getEmail() != null)
+			return false;
+		return getTeacherToken().equals(student.getTeacherToken());
+	}
+
+	@Override
+	public int hashCode() {
+		int result = (int) (getId() ^ (getId() >>> 32));
+		result = 31 * result + getFirstname().hashCode();
+		result = 31 * result + getLastname().hashCode();
+		result = 31 * result + (getPhone() != null ? getPhone().hashCode() : 0);
+		result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
+		result = 31 * result + getTeacherToken().hashCode();
+		result = 31 * result + (isActivity() ? 1 : 0);
+		return result;
+	}
 }

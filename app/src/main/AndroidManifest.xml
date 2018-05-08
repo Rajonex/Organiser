@@ -37,7 +37,7 @@
         <activity android:name=".ViewNote" />
         <activity android:name=".ViewStudent" />
         <activity android:name=".LessonEditActivity" />
-        <activity android:name=".AddNewGroupActivity"></activity>
+        <activity android:name=".AddGroupActivity"></activity>
     </application>
 
 </manifest>

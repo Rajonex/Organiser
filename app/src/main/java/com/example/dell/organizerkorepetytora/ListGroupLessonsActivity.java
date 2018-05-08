@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,16 +30,21 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
 
+    ImageButton buttonHome;
     ListView listLessons;
     List<MiniLesson> listOfLessons;
     SharedPreferences teacherToken;
     String token;
     Lesson singleLesson;
+    long groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_group_lessons);
+
+        Bundle bundle = getIntent().getExtras();
+        groupId = bundle.getLong("id");
 
         initializeElements();
         initializeActions();
@@ -48,31 +54,30 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        listLessons.invalidateViews();
+//        listLessons.invalidateViews();
     }
 
-    public void initializeElements()
-    {
+    public void initializeElements() {
         teacherToken = getSharedPreferences(PREFS, 0);
         token = teacherToken.getString("token", "brak tokenu");
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.appBarHome);
+        //TODO zmienic na toolbar home add edit
+        Toolbar toolbar = (Toolbar) findViewById(R.id.appBarHome);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        listLessons = (ListView)findViewById(R.id.list);
+        buttonHome = (ImageButton)findViewById(R.id.button_home);
+        listLessons = (ListView) findViewById(R.id.list);
 
         listOfLessons = new ArrayList<>();
-        getGroupLessons();
+        getGroupLessons(groupId);
 
-        listLessons.setAdapter(new LessonListAdapter(listOfLessons));
 
     }
 
 
-    public void initializeActions()
-    {
+    public void initializeActions() {
         listLessons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
@@ -84,16 +89,21 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
                 editor.commit();
 
 
-
                 getLesson(id);
 
 
             }
         });
+
+        buttonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ListGroupLessonsActivity.this, FirstScreenActivity.class));
+            }
+        });
     }
 
-    private void getLesson(long lessonId)
-    {
+    private void getLesson(long lessonId) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         LessonRetrofitService lessonRetrofitService = retrofit.create(LessonRetrofitService.class);
@@ -107,15 +117,14 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Lesson> call, Response<Lesson> response) {
                 Lesson lesson = response.body();
-                if(lesson != null)
-                {
-                    singleLesson=lesson;
-
+                if (lesson != null) {
+                    singleLesson = lesson;
 
 
                     String topic = singleLesson.getTopic();
                     String description = singleLesson.getDescription();
                     long date = singleLesson.getDate();
+                    long id = singleLesson.getId();
 
                     Intent appInfo = new Intent(ListGroupLessonsActivity.this, ViewLessonActivity.class);
 
@@ -123,6 +132,8 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
                     bundle.putString("topic", topic);
                     bundle.putString("description", description);
                     bundle.putLong("date", date);
+                    bundle.putLong("id", id);
+                    bundle.putLong("groupId", groupId);
 
                     appInfo.putExtras(bundle);
 
@@ -139,14 +150,10 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
     }
 
 
-    private void getGroupLessons()
-    {
+    private void getGroupLessons(long groupId) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         LessonRetrofitService lessonRetrofitService = retrofit.create(LessonRetrofitService.class);
-
-        long groupId = 1;
-        //String token = "e2e42a07-5508-33f8-b67f-5eb252581f6d";
 
         Call<List<MiniLesson>> lessonCall = lessonRetrofitService.getGroupLessons(groupId, token);
 
@@ -154,26 +161,14 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<MiniLesson>> call, Response<List<MiniLesson>> response) {
                 List<MiniLesson> miniLessons = response.body();
-                if(miniLessons != null)
-                {
-                    if(miniLessons.size() > 1)
-                    {
-                       for(MiniLesson lesson:miniLessons)
-                       {
-                           listOfLessons.add(lesson);
-                           listLessons.invalidateViews();
+                if (miniLessons != null) {
+                    listOfLessons = miniLessons;
 
-                       }
-                    }
-                    else
-                    {
-                        //txtView.setText("Size < 1");
-                    }
+                    listLessons.setAdapter(new LessonListAdapter(listOfLessons));
+                } else {
+                    //txtView.setText("Size < 1");
                 }
-                else
-                {
-                   // txtView.setText("NULL");
-                }
+
             }
 
             @Override
@@ -184,41 +179,33 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
     }
 
 
-
-
     public class LessonListAdapter extends BaseAdapter {
 
         private List<MiniLesson> lessons;
 
 
-        public LessonListAdapter(List<MiniLesson> lessons)
-        {
+        public LessonListAdapter(List<MiniLesson> lessons) {
             this.lessons = lessons;
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return lessons.size();
         }
 
         @Override
-        public MiniLesson getItem(int position)
-        {
+        public MiniLesson getItem(int position) {
             return lessons.get(position);
         }
 
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-            if(convertView==null)
-            {
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
                 //LayoutInflater inflater = LayoutInflater.from(getC)
                 convertView = getLayoutInflater().inflate(R.layout.list_element_layout, null);
             }

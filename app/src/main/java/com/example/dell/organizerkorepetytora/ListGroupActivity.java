@@ -67,7 +67,7 @@ public class ListGroupActivity extends AppCompatActivity {
 
         listOfGroups = new ArrayList<>();
         getMiniGroups();
-        listGroups.setAdapter(new GroupListAdapter(listOfGroups));
+
 
     }
 
@@ -81,6 +81,12 @@ public class ListGroupActivity extends AppCompatActivity {
                 SharedPreferences.Editor editor = teacherToken.edit();
                 editor.putString("token", token);
                 editor.commit();
+
+                long id = ((MiniGroup) adapter.getItemAtPosition(position)).getId();
+                Bundle bundle = new Bundle();
+                bundle.putLong("id", id);
+
+                appInfo.putExtras(bundle);
 
                 startActivity(appInfo);
             }
@@ -100,7 +106,7 @@ public class ListGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(ListGroupActivity.this, AddNewGroupActivity.class));
+                startActivity(new Intent(ListGroupActivity.this, AddGroupActivity.class));
 
             }
 
@@ -123,15 +129,17 @@ public class ListGroupActivity extends AppCompatActivity {
                 List<MiniGroup> miniGroupList = response.body();
                 if(miniGroupList != null)
                 {
-                    if(miniGroupList.size() > 0)
-                    {
-                        for(MiniGroup miniGroup : miniGroupList)
-                        {
-                            listOfGroups.add(miniGroup);
-                            listGroups.invalidateViews();
-                        }
-
-                    }
+//                    if(miniGroupList.size() > 0)
+//                    {
+//                        for(MiniGroup miniGroup : miniGroupList)
+//                        {
+//                            listOfGroups.add(miniGroup);
+//                            listGroups.invalidateViews();
+//                        }
+//
+//                    }
+                    listOfGroups = miniGroupList;
+                    listGroups.setAdapter(new GroupListAdapter(listOfGroups));
                 }
 
             }
