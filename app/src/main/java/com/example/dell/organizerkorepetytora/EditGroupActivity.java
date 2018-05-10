@@ -10,15 +10,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import dialog.TimePickerDialogFragment;
 import rest.GroupRetrofitService;
 import rest.StudentRetrofitService;
 import retrofit2.Call;
@@ -28,8 +35,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Ack;
 import sends.Group;
+import sends.GroupCalendar;
 import sends.Student;
 import utils.Adress;
+import utils.Day;
 
 public class EditGroupActivity extends AppCompatActivity {
 
@@ -47,6 +56,10 @@ public class EditGroupActivity extends AppCompatActivity {
     List<Student> studendsInGroup;
     List<Student> selectedStudents;
     Group singleGroup;
+    Spinner spinner;
+    Button buttonHour;
+
+    TimePickerDialogFragment timePickerDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +82,7 @@ public class EditGroupActivity extends AppCompatActivity {
         teacherToken = getSharedPreferences(PREFS, 0);
         token = teacherToken.getString("token", "brak tokenu");
 
+        timePickerDialogFragment = new TimePickerDialogFragment();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.appBar);
         setSupportActionBar(toolbar);
@@ -76,6 +90,19 @@ public class EditGroupActivity extends AppCompatActivity {
 
         buttonHome = (ImageButton) findViewById(R.id.button_home);
         buttonSave = (ImageButton) findViewById(R.id.button_save);
+        buttonHour = (Button) findViewById(R.id.button_hour);
+
+        List<String> arraySpinner = new ArrayList<>();
+        for(Day day : Day.values())
+        {
+            arraySpinner.add(day.getDescription());
+        }
+
+        spinner = (Spinner) findViewById(R.id.spinner_day);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, arraySpinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
         groupName = (EditText) findViewById(R.id.add_group_name);
         groupRate = (EditText) findViewById(R.id.add_group_payment);
@@ -106,16 +133,56 @@ public class EditGroupActivity extends AppCompatActivity {
 
         });
 
+        buttonHour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePickerDialogFragment.show(getFragmentManager(), null);
+            }
+        });
+
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (singleGroup != null) {
+
+                    List<GroupCalendar> lessonsDays = singleGroup.getGroupCalendar();
+
+                    Day d = null;
+                    for(Day day : Day.values())
+                    {
+                        if(day.getDescription().equals((String)spinner.getSelectedItem()))
+                        {
+                            d = day;
+                        }
+                    }
+
+                    if(d != null)
+                    {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(Calendar.HOUR_OF_DAY, timePickerDialogFragment.getHourOfDay());
+                        calendar.set(Calendar.MINUTE, timePickerDialogFragment.getMinute());
+                        calendar.set(Calendar.SECOND, 0);
+                        calendar.set(Calendar.MILLISECOND, 0);
+
+
+                        if(lessonsDays.size() > 0)
+                        {
+                            GroupCalendar groupCalendar = lessonsDays.get(0);
+                            groupCalendar.setDay(d);
+                            groupCalendar.setTime(calendar.getTime().getTime());
+                        }
+                        else {
+                            GroupCalendar groupCalendar = new GroupCalendar(1L, token, 1L, d, calendar.getTime().getTime());
+                            lessonsDays.add(groupCalendar);
+                        }
+                    }
+
                     String name = groupName.getText().toString();
                     double rate = Double.parseDouble(groupRate.getText().toString());
 
                     //TODO zmienic kalendarz z singleGroup na nowy kalendarz
-                    Group editedGroup = new Group(singleGroup.getId(), name, ((CheckboxAdapterEditGroup) listStudents.getAdapter()).getStudentsInGroup(), rate, token, true, singleGroup.getGroupCalendar());
+                    Group editedGroup = new Group(singleGroup.getId(), name, ((CheckboxAdapterEditGroup) listStudents.getAdapter()).getStudentsInGroup(), rate, token, true, lessonsDays);
                     editGroup(editedGroup);
                 }
             }
@@ -136,7 +203,7 @@ public class EditGroupActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Group> call, Response<Group> response) {
                 Group group = response.body();
-                if (group != null) {
+                if (group != null && group.getGroupCalendar() != null) { // Zalozenie, ze zawsze podany jest termin
                     singleGroup = group;
 
                     studendsInGroup = singleGroup.getStudents();
@@ -144,6 +211,17 @@ public class EditGroupActivity extends AppCompatActivity {
                     Double rateDouble = new Double(singleGroup.getRate());
                     groupRate.setText(rateDouble.toString(), TextView.BufferType.EDITABLE);
 
+                    if(singleGroup.getGroupCalendar().size() > 0) {
+                        String myString = singleGroup.getGroupCalendar().get(0).getDay().getDescription(); //the value you want the position for
+                        ArrayAdapter myAdap = (ArrayAdapter) spinner.getAdapter(); //cast to an ArrayAdapter
+                        int spinnerPosition = myAdap.getPosition(myString);
+                        spinner.setSelection(spinnerPosition);
+
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(singleGroup.getGroupCalendar().get(0).getTime());
+                        timePickerDialogFragment.setHourOfDay(calendar.get(Calendar.HOUR_OF_DAY));
+                        timePickerDialogFragment.setMinute(calendar.get(Calendar.MINUTE));
+                    }
                     getAllStudents(context, studendsInGroup);
                 } else {//TODO pop-up
                 }

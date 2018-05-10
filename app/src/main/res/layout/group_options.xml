@@ -42,4 +42,56 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_edit" />
+
+    <!--TODO bez usuwania-->
 </android.support.constraint.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:orientation="vertical"-->
+<!--android:layout_margin="25dp"-->
+<!--android:layout_weight="0.35"-->
+    <!--&gt;-->
+
+
+<!--<Button-->
+    <!--android:id="@+id/button_show"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_margin="15dp"-->
+
+    <!--android:layout_weight="1"-->
+    <!--android:text="Pokaż lekcje" />-->
+
+
+<!--<Button-->
+    <!--android:id="@+id/button_edit"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignStart="@+id/button_show"-->
+
+    <!--android:layout_below="@+id/button_show"-->
+    <!--android:layout_marginTop="18dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:text="Edytuj" />-->
+
+<!--&lt;!&ndash;<Button&ndash;&gt;-->
+<!--&lt;!&ndash;android:id="@+id/button_del"&ndash;&gt;-->
+<!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+<!--&lt;!&ndash;android:layout_height="0dp"&ndash;&gt;-->
+<!--&lt;!&ndash;android:layout_marginBottom="40dp"&ndash;&gt;-->
+<!--&lt;!&ndash;android:layout_marginTop="43dp"&ndash;&gt;-->
+<!--&lt;!&ndash;android:text="Usun"&ndash;&gt;-->
+<!--&lt;!&ndash;/>&ndash;&gt;-->
+
+<!--</RelativeLayout>-->

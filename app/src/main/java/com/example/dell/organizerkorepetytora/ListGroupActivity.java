@@ -63,7 +63,6 @@ public class ListGroupActivity extends AppCompatActivity {
         buttonAdd = (ImageButton) findViewById(R.id.button_add);
 
         listGroups = (ListView)findViewById(R.id.list);
-        listGroups = (ListView)findViewById(R.id.list);
 
         listOfGroups = new ArrayList<>();
         getMiniGroups();

@@ -15,7 +15,7 @@
         android:src="@drawable/home" />
 
     <ImageButton
-        android:id="@+id/button_aright"
+        android:id="@+id/button_aleft"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
@@ -27,7 +27,7 @@
         android:src="@drawable/arrowleft" />
 
     <ImageButton
-        android:id="@+id/button_aleft"
+        android:id="@+id/button_aright"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"

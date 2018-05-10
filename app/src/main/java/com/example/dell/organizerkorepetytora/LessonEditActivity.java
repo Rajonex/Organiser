@@ -1,6 +1,7 @@
 package com.example.dell.organizerkorepetytora;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,13 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,6 +62,10 @@ public class LessonEditActivity extends AppCompatActivity {
     Group singleGroup;
     ListView listStudents;
 
+    Button buttonDate;
+    Calendar calendar;
+    DatePickerDialog.OnDateSetListener dateListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,11 +100,31 @@ public class LessonEditActivity extends AppCompatActivity {
 //
         lessonTopic = (EditText)  findViewById(R.id.lesson_topic);
         lessonDescription = (EditText) findViewById(R.id.lesson_data);
-        lessonDate = (EditText) findViewById(R.id.lesson_date);
+        buttonDate = (Button) findViewById(R.id.button_date);
 
 
         listStudents = (ListView) findViewById(R.id.lesson_attendance_list);
 
+
+        calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
+
+        dateListener = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
+//                updateLabel();
+            }
+
+        };
 
         getLesson(this, lessonId);
 
@@ -111,13 +139,21 @@ public class LessonEditActivity extends AppCompatActivity {
             }
         });
 
+        buttonDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(LessonEditActivity.this, dateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 String topic = lessonTopic.getText().toString();
                 String description = lessonDescription.getText().toString();
-                long date = singleLesson.getDate(); //TODO poprawic date
+
+                long date = calendar.getTimeInMillis(); //TODO poprawic date
 
                 //TODO zmienic kalendarz z singleGroup na nowy kalendarz
                 Lesson editedLesson = new Lesson(singleLesson.getId(), ((CheckboxAdapterEditLesson) listStudents.getAdapter()).getStudentsInGroup(), topic, description, date, singleLesson.getGroupId(), token);
@@ -179,10 +215,14 @@ public class LessonEditActivity extends AppCompatActivity {
                 if (lesson != null) {
                     singleLesson = lesson;
 
-                    Date dateSql = new Date(singleLesson.getDate());
+
+                    calendar.setTimeInMillis(singleLesson.getDate());
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
+
                     lessonTopic.setText(singleLesson.getTopic(), TextView.BufferType.EDITABLE);
                     lessonDescription.setText(singleLesson.getDescription(), TextView.BufferType.EDITABLE);
-                    lessonDate.setText(dateSql.toString(), TextView.BufferType.EDITABLE);
+
 
                     studentsPresent = singleLesson.getStudentPresent();
 

@@ -9,7 +9,7 @@ public class Saldo {
 	private int lessonsNumber;
 	private double toPay;
 	private double paid;
-	private Date date;
+	private long date;
 
 	public long getId() {
 		return id;
@@ -59,15 +59,15 @@ public class Saldo {
 		this.paid = paid;
 	}
 
-	public Date getDate() {
+	public long getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(long date) {
 		this.date = date;
 	}
 
-	public Saldo(long id, long groupId, Student student, int lessonsNumber, double toPay, double paid, Date date) {
+	public Saldo(long id, long groupId, Student student, int lessonsNumber, double toPay, double paid, long date) {
 		super();
 		this.id = id;
 		this.groupId = groupId;

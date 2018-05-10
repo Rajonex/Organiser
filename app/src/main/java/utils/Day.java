@@ -1,5 +1,15 @@
 package utils;
 
 public enum Day {
-	MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY;
+	MONDAY("Poniedziałek"), TUESDAY("Wtorek"), WEDNESDAY("Środa"), THURSDAY("Czwartek"), FRIDAY("Piątek"), SATURDAY("Sobota"), SUNDAY("Niedziela");
+
+	private String description;
+	Day(String desc)
+	{
+		description = desc;
+	}
+
+	public String getDescription() {
+		return description;
+	}
 }

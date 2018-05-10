@@ -1,6 +1,7 @@
 package lesson;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import com.example.dell.organizerkorepetytora.FirstScreenActivity;
 import com.example.dell.organizerkorepetytora.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -55,6 +59,10 @@ public class AddLessonActivity extends AppCompatActivity {
     EditText lessonDescription;
     long id;
 
+    Button buttonDate;
+    Calendar calendar;
+    DatePickerDialog.OnDateSetListener dateListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,11 +86,32 @@ public class AddLessonActivity extends AppCompatActivity {
 
         buttonHome = (ImageButton) findViewById(R.id.button_home);
         buttonSave = (ImageButton) findViewById(R.id.button_save);
+        buttonDate = (Button) findViewById(R.id.button_date);
         lessonTopic = (EditText) findViewById(R.id.lesson_topic);
         lessonDescription = (EditText) findViewById(R.id.lesson_description);
 
         listStudents = (ListView) findViewById(R.id.lesson_attendance_list);
-        // listStudents.setOnItemClickListener(new CheckBoxClick());
+
+
+        calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
+
+        dateListener = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
+//                updateLabel();
+            }
+
+        };
 
         getGroup(this);
 
@@ -93,11 +122,15 @@ public class AddLessonActivity extends AppCompatActivity {
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 startActivity(new Intent(AddLessonActivity.this, FirstScreenActivity.class));
-
             }
+        });
 
+        buttonDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(AddLessonActivity.this, dateListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
         });
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +142,7 @@ public class AddLessonActivity extends AppCompatActivity {
                     String topic = lessonTopic.getText().toString();
                     String description = lessonDescription.getText().toString();
 
-                    Lesson lesson = new Lesson(1L, ((CheckboxAdapter) listStudents.getAdapter()).getSelectedStudents(), topic, description, 2L, singleGroup.getId(), token);
+                    Lesson lesson = new Lesson(1L, ((CheckboxAdapter) listStudents.getAdapter()).getSelectedStudents(), topic, description, calendar.getTimeInMillis(), singleGroup.getId(), token);
 
                     addLesson(lesson);
                 }

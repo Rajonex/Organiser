@@ -1,6 +1,7 @@
 package com.example.dell.organizerkorepetytora;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,16 +11,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import dialog.TimePickerDialogFragment;
 import rest.GroupRetrofitService;
 import rest.StudentRetrofitService;
 import retrofit2.Call;
@@ -32,7 +38,9 @@ import sends.Group;
 import sends.GroupCalendar;
 import sends.Student;
 import utils.Adress;
+import utils.Day;
 
+// TODO zabezpieczenie, zeby wprowadzane dane byly zgodne ze swoimi typami
 public class AddGroupActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
@@ -45,9 +53,14 @@ public class AddGroupActivity extends AppCompatActivity {
 
     ImageButton buttonHome;
     ImageButton buttonSave;
+    Button buttonHour;
 
     EditText name;
     EditText payment;
+
+    Spinner spinner;
+
+    TimePickerDialogFragment timePickerDialogFragment;
 
     List<Student> studentInGroup;
 
@@ -67,6 +80,7 @@ public class AddGroupActivity extends AppCompatActivity {
         teacherToken = getSharedPreferences(PREFS, 0);
         token = teacherToken.getString("token", "brak tokenu");
 
+        timePickerDialogFragment = new TimePickerDialogFragment();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.appBar);
         setSupportActionBar(toolbar);
@@ -74,18 +88,26 @@ public class AddGroupActivity extends AppCompatActivity {
 
         buttonHome = (ImageButton) findViewById(R.id.button_home);
         buttonSave = (ImageButton) findViewById(R.id.button_save);
+        buttonHour = (Button) findViewById(R.id.button_hour);
 
         name = (EditText) findViewById(R.id.add_group_name);
         payment = (EditText) findViewById(R.id.add_group_payment);
 
         listStudents = (ListView) findViewById(R.id.lesson_attendance_list);
 
+        List<String> arraySpinner = new ArrayList<>();
+        for(Day day : Day.values())
+        {
+            arraySpinner.add(day.getDescription());
+        }
+
+        spinner = (Spinner) findViewById(R.id.spinner_day);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, arraySpinner);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
         getAllStudents(this);
-
-//        listStudents.setAdapter(new AddGroupActivity.CheckboxAdapter(listOfStudents, this));
-//        listStudents.setItemsCanFocus(false);
-//        listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
     }
 
@@ -95,11 +117,8 @@ public class AddGroupActivity extends AppCompatActivity {
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 startActivity(new Intent(AddGroupActivity.this, FirstScreenActivity.class));
-
             }
-
         });
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -111,15 +130,42 @@ public class AddGroupActivity extends AppCompatActivity {
                 List<Student> studentsInGroup = ((CheckboxAdapter) listStudents.getAdapter()).getCheckedStudents();
 
 //                List<Student> studentsInGroup = (new CheckboxAdapter(listOfStudents)).getCheckedStudents();
-                System.out.println(studentsInGroup);
 
-                Group group = new Group(1L, groupName, studentsInGroup, Double.parseDouble(groupPayment), token, true, new ArrayList<GroupCalendar>());
+                List<GroupCalendar> lessonsDays = new ArrayList<GroupCalendar>();
+
+                Day d = null;
+                for(Day day : Day.values())
+                {
+                    if(day.getDescription().equals((String)spinner.getSelectedItem()))
+                    {
+                        d = day;
+                    }
+                }
+                System.out.println(d);
+
+                if(d != null)
+                {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.set(Calendar.HOUR_OF_DAY, timePickerDialogFragment.getHourOfDay());
+                    calendar.set(Calendar.MINUTE, timePickerDialogFragment.getMinute());
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+
+                    GroupCalendar groupCalendar = new GroupCalendar(1L, token, 1L, d, calendar.getTime().getTime());
+                    lessonsDays.add(groupCalendar);
+                }
+
+                Group group = new Group(1L, groupName, studentsInGroup, Double.parseDouble(groupPayment), token, true, lessonsDays);
 
                 addGroup(group);
-
-
             }
+        });
 
+        buttonHour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                timePickerDialogFragment.show(getFragmentManager(), null);
+            }
         });
 
     }
