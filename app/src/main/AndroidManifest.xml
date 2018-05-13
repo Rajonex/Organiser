@@ -11,33 +11,54 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
         <!-- <activity android:name="com.example.dell.organizerkorepetytora.MainActivity"> -->
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/MyTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FirstScreenActivity" />
-        <activity android:name=".AddUserActivity" />
-        <activity android:name="lesson.ListGroupInLessonActivity" />
-        <activity android:name="lesson.AddLessonActivity" />
-        <activity android:name=".ListStudentPaymentActivity" />
-        <activity android:name=".PaymentActivity" />
-        <activity android:name=".AddPaymentActivity" />
-        <activity android:name=".ListGroupActivity" />
-        <activity android:name=".GroupOptionsActivity" />
-        <activity android:name=".EditGroupActivity" />
-        <activity android:name=".ListGroupLessonsActivity" />
-        <activity android:name=".ViewLessonActivity" />
-        <activity android:name=".ListStudentsActivity" />
-        <activity android:name=".AddStudentActivity" />
-        <activity android:name=".ListNotesActivity" />
-        <activity android:name=".AddNoteActivity" />
-        <activity android:name=".ViewNote" />
-        <activity android:name=".ViewStudent" />
-        <activity android:name=".LessonEditActivity" />
-        <activity android:name=".AddGroupActivity"></activity>
+        <activity android:name=".FirstScreenActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".AddUserActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name="lesson.ListGroupInLessonActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name="lesson.AddLessonActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ListStudentPaymentActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".PaymentActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".AddPaymentActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ListGroupActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".GroupOptionsActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".EditGroupActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ListGroupLessonsActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ViewLessonActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ListStudentsActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".AddStudentActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ListNotesActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".AddNoteActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ViewNote"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".ViewStudent"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".LessonEditActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".AddGroupActivity"
+            android:theme="@style/MyTheme"></activity>
     </application>
 
 </manifest>

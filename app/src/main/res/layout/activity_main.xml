@@ -48,22 +48,20 @@
 
     <Button
         android:id="@+id/button_logIn"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/editText2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="45dp"
-        android:background="#11000000"
         android:text="Zaloguj" />
 
     <Button
         android:id="@+id/button_signUp"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:layout_alignStart="@+id/button_logIn"
         android:layout_below="@+id/button_logIn"
         android:layout_marginTop="29dp"
-        android:background="#11000000"
         android:text="Zarejestruj" />
 
     <TextView
