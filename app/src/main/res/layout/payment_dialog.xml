@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/name_lastname_pay"
+        android:layout_width="280dp"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="43dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="31dp"
+        tools:layout_editor_absoluteY="36dp" />
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="140dp"
+        android:layout_height="45dp"
+        android:layout_alignTop="@+id/to_pay"
+        android:layout_marginEnd="11dp"
+        android:layout_toStartOf="@+id/to_pay"
+        android:text="Do zapłaty"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="31dp"
+        tools:layout_editor_absoluteY="113dp" />
+
+    <TextView
+        android:id="@+id/to_pay"
+        android:layout_width="140dp"
+        android:layout_height="45dp"
+        android:layout_alignEnd="@+id/name_lastname_pay"
+        android:layout_below="@+id/name_lastname_pay"
+        android:layout_marginTop="23dp"
+        android:text="TextView"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="194dp"
+        tools:layout_editor_absoluteY="113dp" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="140dp"
+        android:layout_height="45dp"
+        android:layout_alignBaseline="@+id/payed"
+        android:layout_alignBottom="@+id/payed"
+        android:layout_alignStart="@+id/textView2"
+        android:text="Zapłacono"
+        android:textSize="18sp"
+        tools:layout_editor_absoluteX="31dp"
+        tools:layout_editor_absoluteY="193dp" />
+
+    <EditText
+        android:id="@+id/payed"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/to_pay"
+        android:layout_below="@+id/to_pay"
+        android:layout_marginTop="44dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="188dp"
+        tools:layout_editor_absoluteY="193dp" />
+
+
+    <Button
+        android:id="@+id/accept_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView10"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="58dp"
+        android:text="Zatwierdź"
+        tools:layout_editor_absoluteX="131dp"
+        tools:layout_editor_absoluteY="259dp" />
+</RelativeLayout>
