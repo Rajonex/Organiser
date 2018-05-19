@@ -94,6 +94,7 @@ public class AddLessonActivity extends AppCompatActivity {
 
 
         calendar = Calendar.getInstance();
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
 
@@ -137,7 +138,7 @@ public class AddLessonActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(singleGroup!=null && listStudents.getAdapter()!=null) {
+                if (singleGroup != null && listStudents.getAdapter() != null) {
 
                     String topic = lessonTopic.getText().toString();
                     String description = lessonDescription.getText().toString();
@@ -145,8 +146,7 @@ public class AddLessonActivity extends AppCompatActivity {
                     Lesson lesson = new Lesson(1L, ((CheckboxAdapter) listStudents.getAdapter()).getSelectedStudents(), topic, description, calendar.getTimeInMillis(), singleGroup.getId(), token);
 
                     addLesson(lesson);
-                }
-                else{
+                } else {
                     //TODO pop up (nie pobrano danych grupy)
                 }
             }
@@ -172,6 +172,12 @@ public class AddLessonActivity extends AppCompatActivity {
                 if (group != null) {
                     System.out.println("grupa nie jest nullem");
                     singleGroup = group;
+
+                    if (singleGroup.getGroupCalendar().size() > 0) {
+                        calendar.set(Calendar.DAY_OF_WEEK, singleGroup.getGroupCalendar().get(0).getDay().getCalendarDay());
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
+                    }
 
                     listStudents.setAdapter(new CheckboxAdapter(singleGroup.getStudents(), context));
                     listStudents.setItemsCanFocus(false);
@@ -229,15 +235,14 @@ public class AddLessonActivity extends AppCompatActivity {
 
     public class CheckboxAdapter extends BaseAdapter {
 
-//        private List<Student> students;
+        //        private List<Student> students;
         ArrayList<StudentPresent> selectedStudents;
         private Context context;
 
         public CheckboxAdapter(List<Student> students, Context context) {
 //            this.students = students;
             selectedStudents = new ArrayList<StudentPresent>();
-            for(Student student : students)
-            {
+            for (Student student : students) {
                 selectedStudents.add(new StudentPresent(1L, student, false));
             }
             this.context = context;

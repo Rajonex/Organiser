@@ -23,7 +23,7 @@ public class AddUserActivity extends AppCompatActivity {
     Button buttonZatwierdz;
     EditText editTextUsername;
     EditText editTextPassword;
-    TextView textViewInfo;
+    EditText editTextTeachername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class AddUserActivity extends AppCompatActivity {
         buttonZatwierdz = (Button) findViewById(R.id.buttonZatwierdz);
         editTextUsername = (EditText) findViewById(R.id.editText_username);
         editTextPassword = (EditText) findViewById(R.id.editText_password);
-        textViewInfo = (TextView) findViewById(R.id.textView_info);
+        editTextTeachername = (EditText) findViewById(R.id.editText_teachername);
 
     }
 
@@ -52,7 +52,7 @@ public class AddUserActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 addTeacher();
-                startActivity(new Intent(AddUserActivity.this, MainActivity.class));
+
             }
         });
 
@@ -66,9 +66,10 @@ public class AddUserActivity extends AppCompatActivity {
 
         String login = editTextUsername.getText().toString();
         String password = editTextPassword.getText().toString();
+        String name = editTextTeachername.getText().toString();
 
         String token = "byleco"; // server doesn't look on this value during creating teacher account
-        String name = "NazywamSie";
+//        String name = "NazywamSie";
 
         Teacher teacher = new Teacher(login, password, token, name);
 
@@ -84,11 +85,10 @@ public class AddUserActivity extends AppCompatActivity {
                         case 0: // it's ok, get teacher and save his token (save by SharedPreferences)
                         {
                             Teacher teacherForSave = resultTeacher.getTeacher();
-                            textViewInfo.setText("Token to save " + teacherForSave.getToken());
+                            startActivity(new Intent(AddUserActivity.this, MainActivity.class));
                             break;
                         }
                         case 1: {
-                            textViewInfo.setText("name exists in database - can't create");
                             // name exists in database - can't create
                             break;
                         }

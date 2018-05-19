@@ -17,19 +17,30 @@
     <include
         layout="@layout/custom_toolbar_arrows"
         android:id="@+id/appBarArrow"/>
+        <TextView
+            android:id="@+id/lessons_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
 
-    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/tableLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
-        android:stretchColumns="*">
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:stretchColumns="*">
 
 
-    </TableLayout>
+        </TableLayout>
+
+
 
     </LinearLayout>
+
+
 </ScrollView>
 
 

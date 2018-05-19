@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,75 +8,70 @@
 
     <TextView
         android:id="@+id/textView_username"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="156dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="150dp"
+        android:layout_marginTop="4dp"
         android:layout_weight="1"
-        android:text="Nazwa uzytkownika"
-        app:layout_constraintBottom_toTopOf="@+id/textView_info"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Nazwa uzytkownika" />
 
+    <EditText
+        android:id="@+id/editText_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1" />
 
 
     <TextView
         android:id="@+id/textView_password"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/editText_username"
         android:layout_weight="1"
-        android:text="Haslo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Haslo" />
 
-    <EditText
-        android:id="@+id/editText_username"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView_username" />
 
     <EditText
         android:id="@+id/editText_password"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
-        android:layout_weight="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView_username" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView_password"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/buttonZatwierdz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="88dp"
-        android:layout_marginTop="156dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/editText_teachername"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="50dp"
         android:text="Zatwierdz"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView_info"
         app:layout_constraintTop_toBottomOf="@+id/textView_username" />
+
 
     <TextView
-        android:id="@+id/textView_info"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="338dp"
-        android:layout_marginEnd="34dp"
-        android:layout_marginStart="16dp"
-        android:text="Czy uzytkownik juz istnieje"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/buttonZatwierdz"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_username" />
+        android:id="@+id/textView_teachername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/editText_password"
+        android:text="Imię" />
 
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/editText_teachername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView_teachername"
+        android:layout_weight="1" />
+
+
+
+
+</RelativeLayout>

@@ -358,6 +358,9 @@ public class EditGroupActivity extends AppCompatActivity {
 
             if (studentsInGroup.contains(getItem(position))) {
                 viewHolder.checkBox.setChecked(true);
+            } else
+            {
+                viewHolder.checkBox.setChecked(false);
             }
             viewHolder.text.setText(getItem(position).getFirstname() + " " + getItem(position).getLastname());
 

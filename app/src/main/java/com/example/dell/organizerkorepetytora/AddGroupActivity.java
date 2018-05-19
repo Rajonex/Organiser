@@ -308,6 +308,13 @@ public class AddGroupActivity extends AppCompatActivity {
             viewHolder.checkBox.setTag(position);
 
 
+            if (selectedStudents.contains(getItem(position))) {
+                viewHolder.checkBox.setChecked(true);
+            } else
+            {
+                viewHolder.checkBox.setChecked(false);
+            }
+
             viewHolder.checkBox.setOnClickListener(new AdapterOnClickListener(viewHolder, position));
 
             viewHolder.text.setText(getItem(position).getFirstname() + " " + getItem(position).getLastname());

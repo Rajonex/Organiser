@@ -42,6 +42,7 @@ import utils.Day;
 public class MainActivity extends AppCompatActivity {
 
     public static final String PREFS = "teacherToken";
+    public static final String PREFSTheme = "theme";
 
     TextView txtView;
     Button button_logIn;
@@ -52,6 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        setTheme(R.style.Theme_AppCompat_Light);
+//        setTheme(R.style.MyTheme);
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        int themeCode = ThemePreference.getInt("theme", R.style.BrightTheme);
+
+        setTheme(themeCode);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 //addNote();
 
 
-                addLesson();
+//                addLesson();
 //                getLesson();
 //                getGroupLessons();
 //                getAllStudents();
@@ -120,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 //                getGroup();
 //                getMiniGroups();
 //                addGroup();
-//            startActivity(new Intent(MainActivity.this, AddUserActivity.class));
+            startActivity(new Intent(MainActivity.this, AddUserActivity.class));
             }
         });
     }

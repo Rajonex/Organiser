@@ -5,7 +5,7 @@ package utils;
  */
 
 public class Adress {
-    private static final String adress = "http://192.168.0.19:8080/Server_Organiser/rest/";
+    private static final String adress = "http://192.168.43.175:8080/Server_Organiser/rest/";
 
     public static String getAdress()
     {

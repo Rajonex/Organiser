@@ -45,6 +45,7 @@ public class PaymentActivity extends AppCompatActivity {
     private ImageButton buttonHome;
     private ImageButton buttonRight;
     private ImageButton buttonLeft;
+    private TextView lessonMonth;
 
     //    TableRow tableRow;
     private TextView nameLastname;
@@ -83,6 +84,7 @@ public class PaymentActivity extends AppCompatActivity {
         buttonRight = (ImageButton) findViewById(R.id.button_aright);
         buttonLeft = (ImageButton) findViewById(R.id.button_aleft);
 
+        lessonMonth = (TextView) findViewById(R.id.lessons_month);
         tableLayout = (TableLayout) findViewById(R.id.tableLayout);
 
 //        TableRow tableRow = new TableRow(this);
@@ -154,6 +156,9 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void getSaldos(Context context, int month, int year, long groupId) {
+        // Ustawianie daty
+        lessonMonth.setText(""+month+"."+year);
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         SaldoRetrofitService saldoRetrofitService = retrofit.create(SaldoRetrofitService.class);
