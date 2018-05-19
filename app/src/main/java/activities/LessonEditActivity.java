@@ -1,7 +1,8 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,15 +20,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.sql.Date;
+import com.example.dell.organizerkorepetytora.R;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import lesson.AddLessonActivity;
-import lesson.ListGroupInLessonActivity;
 import rest.GroupRetrofitService;
 import rest.LessonRetrofitService;
 import retrofit2.Call;
@@ -38,7 +38,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Ack;
 import sends.Group;
 import sends.Lesson;
-import sends.Student;
 import sends.StudentPresent;
 import utils.Adress;
 
@@ -59,15 +58,26 @@ public class LessonEditActivity extends AppCompatActivity {
 
     Lesson singleLesson;
     List<StudentPresent> studentsPresent;
-    Group singleGroup;
     ListView listStudents;
 
     Button buttonDate;
     Calendar calendar;
     DatePickerDialog.OnDateSetListener dateListener;
 
+    ProgressDialog progressDialogGetLesson;
+    ProgressDialog progressDialogEditLesson;
+
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lesson_edit);
 
@@ -82,23 +92,22 @@ public class LessonEditActivity extends AppCompatActivity {
 
     }
 
-    public void initializeElements()
-    {
+    public void initializeElements() {
 
         teacherToken = getSharedPreferences(PREFS, 0);
         token = teacherToken.getString("token", "brak tokenu");
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.appBarHomeSave);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.appBarHomeSave);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        buttonHome = (ImageButton)findViewById(R.id.button_home);
-        buttonSave = (ImageButton)findViewById(R.id.button_save);
+        buttonHome = (ImageButton) findViewById(R.id.button_home);
+        buttonSave = (ImageButton) findViewById(R.id.button_save);
 //
 //
 //
-        lessonTopic = (EditText)  findViewById(R.id.lesson_topic);
+        lessonTopic = (EditText) findViewById(R.id.lesson_topic);
         lessonDescription = (EditText) findViewById(R.id.lesson_data);
         buttonDate = (Button) findViewById(R.id.button_date);
 
@@ -121,17 +130,19 @@ public class LessonEditActivity extends AppCompatActivity {
 
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
-//                updateLabel();
             }
 
         };
 
-        getLesson(this, lessonId);
+        progressDialogGetLesson = new ProgressDialog(LessonEditActivity.this);
+        progressDialogGetLesson.setIndeterminate(true);
+        progressDialogGetLesson.setMessage("Pobieranie");
+        progressDialogGetLesson.show();
+        getLesson(lessonId);
 
     }
 
-    public void initializeActions()
-    {
+    public void initializeActions() {
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,10 +164,14 @@ public class LessonEditActivity extends AppCompatActivity {
                 String topic = lessonTopic.getText().toString();
                 String description = lessonDescription.getText().toString();
 
-                long date = calendar.getTimeInMillis(); //TODO poprawic date
+                long date = calendar.getTimeInMillis();
 
-                //TODO zmienic kalendarz z singleGroup na nowy kalendarz
                 Lesson editedLesson = new Lesson(singleLesson.getId(), ((CheckboxAdapterEditLesson) listStudents.getAdapter()).getStudentsInGroup(), topic, description, date, singleLesson.getGroupId(), token);
+
+                progressDialogEditLesson = new ProgressDialog(LessonEditActivity.this);
+                progressDialogEditLesson.setIndeterminate(true);
+                progressDialogEditLesson.setMessage("Ładowanie...");
+                progressDialogEditLesson.show();
                 editLesson(editedLesson);
 //                startActivity(new Intent(LessonEditActivity.this, ListGroupLessonsActivity.class));
 
@@ -175,6 +190,7 @@ public class LessonEditActivity extends AppCompatActivity {
         lessonCall.enqueue(new Callback<Ack>() {
             @Override
             public void onResponse(Call<Ack> call, Response<Ack> response) {
+                progressDialogEditLesson.dismiss();
                 Ack ack = response.body();
                 if (ack != null) {
                     if (ack.isConfirm()) {
@@ -187,30 +203,34 @@ public class LessonEditActivity extends AppCompatActivity {
 
                         startActivity(appInfo);
                     } else {
-//                        txtView.setText("Nie dodano lekcji");
+                        Toast.makeText(LessonEditActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else
+                {
+                    Toast.makeText(LessonEditActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
-
+                progressDialogEditLesson.dismiss();
+                Toast.makeText(LessonEditActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
-    private void getLesson(Context context, long lessonId) {
+
+    private void getLesson(long lessonId) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         LessonRetrofitService lessonRetrofitService = retrofit.create(LessonRetrofitService.class);
-
-        //long lessonId = 7L;
-        //String token = "e2e42a07-5508-33f8-b67f-5eb252581f6d";
 
         Call<Lesson> lessonCall = lessonRetrofitService.getLesson(lessonId, token);
 
         lessonCall.enqueue(new Callback<Lesson>() {
             @Override
             public void onResponse(Call<Lesson> call, Response<Lesson> response) {
+                progressDialogGetLesson.dismiss();
                 Lesson lesson = response.body();
                 if (lesson != null) {
                     singleLesson = lesson;
@@ -226,71 +246,24 @@ public class LessonEditActivity extends AppCompatActivity {
 
                     studentsPresent = singleLesson.getStudentPresent();
 
-                    listStudents.setAdapter(new LessonEditActivity.CheckboxAdapterEditLesson(studentsPresent, context));
+                    listStudents.setAdapter(new LessonEditActivity.CheckboxAdapterEditLesson(studentsPresent, LessonEditActivity.this));
                     listStudents.setItemsCanFocus(false);
                     listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-                    //getGroup(context, singleLesson);
-
-//                    String topic = singleLesson.getTopic();
-//                    String description = singleLesson.getDescription();
-//                    long date = singleLesson.getDate();
-//                    long id = singleLesson.getId();
-//
-//                    Intent appInfo = new Intent(ListGroupLessonsActivity.this, ViewLessonActivity.class);
-//
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("topic", topic);
-//                    bundle.putString("description", description);
-//                    bundle.putLong("date", date);
-//                    bundle.putLong("id", id);
-//
-//                    appInfo.putExtras(bundle);
-//
-//
-//                    startActivity(appInfo);
+                } else
+                {
+                    Toast.makeText(LessonEditActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Lesson> call, Throwable t) {
-
+                progressDialogGetLesson.dismiss();
+                Toast.makeText(LessonEditActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void getGroup(Context context, Lesson singleLesson) {
-
-
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
-
-        GroupRetrofitService groupRetrofitService = retrofit.create(GroupRetrofitService.class);
-
-        Call<Group> groupCall = groupRetrofitService.getGroup(groupId, token);
-
-        groupCall.enqueue(new Callback<Group>() {
-
-            @Override
-            public void onResponse(Call<Group> call, Response<Group> response) {
-                System.out.println("test");
-                Group group = response.body();
-                if (group != null) {
-                    System.out.println("grupa nie jest nullem");
-                    singleGroup = group;
-
-
-
-                } else {//TODO pop-up
-                    System.out.println("grupa jest nullem");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Group> call, Throwable t) {
-
-            }
-        });
-    }
 
     static class ViewHolder {
         CheckBox checkBox;
@@ -299,9 +272,9 @@ public class LessonEditActivity extends AppCompatActivity {
 
     public class CheckboxAdapterEditLesson extends BaseAdapter {
 
-//        private List<Student> students;
+        //        private List<Student> students;
         private List<StudentPresent> studentsInGroup;
-//        ArrayList<StudentPresent> selectedStudents = new ArrayList<StudentPresent>();
+        //        ArrayList<StudentPresent> selectedStudents = new ArrayList<StudentPresent>();
         private Context context;
 
         public CheckboxAdapterEditLesson(List<StudentPresent> studentsInGroup, Context context) {

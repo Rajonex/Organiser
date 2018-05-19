@@ -1,5 +1,6 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,19 +41,25 @@ public class ListNotesActivity extends AppCompatActivity {
     List<Note> listOfNotes;
     SharedPreferences teacherToken;
     String token;
+    ProgressDialog progressDialog;
 
-
-
-
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_notes);
 
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.appBarHomeAdd);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.appBarHomeAdd);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -69,23 +79,29 @@ public class ListNotesActivity extends AppCompatActivity {
         teacherToken = getSharedPreferences(PREFS, 0);
         token = teacherToken.getString("token", "brak tokenu");
 
-        toolbar = (Toolbar)findViewById(R.id.appBarHomeAdd);
+        toolbar = (Toolbar) findViewById(R.id.appBarHomeAdd);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        buttonHome = (ImageButton)findViewById(R.id.button_home);
+        buttonHome = (ImageButton) findViewById(R.id.button_home);
         buttonAdd = (ImageButton) findViewById(R.id.button_add);
-        listNotes = (ListView)findViewById(R.id.list);
+        listNotes = (ListView) findViewById(R.id.list);
 
         listOfNotes = new ArrayList<>();
-        getNotes();
 
         listNotes.setAdapter(new NoteListAdapter(listOfNotes));
+
+        progressDialog = new ProgressDialog(ListNotesActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Pobieranie");
+        progressDialog.show();
+        getNotes();
+
+
 
     }
 
     private void initializeActions() {
-
 
 
         buttonHome.setOnClickListener(new View.OnClickListener() {
@@ -99,11 +115,9 @@ public class ListNotesActivity extends AppCompatActivity {
         });
 
 
-        buttonAdd.setOnClickListener(new View.OnClickListener()
-        {
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
 
                 SharedPreferences.Editor editor = teacherToken.edit();
@@ -120,7 +134,7 @@ public class ListNotesActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int position, long arg) {
                 Intent appInfo = new Intent(ListNotesActivity.this, ViewNote.class);
-                System.out.println(((Note)adapter.getItemAtPosition(position)).getTitle());
+                System.out.println(((Note) adapter.getItemAtPosition(position)).getTitle());
                 String title = ((Note) adapter.getItemAtPosition(position)).getTitle();
                 String text = ((Note) adapter.getItemAtPosition(position)).getText();
                 String token = ((Note) adapter.getItemAtPosition(position)).getTeacherToken();
@@ -141,9 +155,7 @@ public class ListNotesActivity extends AppCompatActivity {
 
     }
 
-    private void getNotes()
-    {
-
+    private void getNotes() {
 
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
@@ -157,26 +169,24 @@ public class ListNotesActivity extends AppCompatActivity {
         noteCall.enqueue(new Callback<List<Note>>() {
             @Override
             public void onResponse(Call<List<Note>> call, Response<List<Note>> response) {
+                progressDialog.dismiss();
                 List<Note> notes = response.body();
-                if(notes != null)
-                {
-                    for(Note note : notes)
-                    {
+                if (notes != null) {
+                    for (Note note : notes) {
                         listOfNotes.add(note);
 //                        adapter = new ArrayAdapter<String>(listNotes.getContext(), android.R.layout.simple_list_item_1, listOfNotes);
 //                        listNotes.setAdapter(adapter);
                         listNotes.invalidateViews();
                     }
-                }
-                else
-                {
-                    //listOfNotes.add(null);
+                } else {
+                    Toast.makeText(ListNotesActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Note>> call, Throwable t) {
-                System.out.println("Blad notatki");
+                progressDialog.dismiss();
+                Toast.makeText(ListNotesActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -187,36 +197,29 @@ public class ListNotesActivity extends AppCompatActivity {
         private List<Note> notes;
 
 
-        public NoteListAdapter(List<Note> notes)
-        {
+        public NoteListAdapter(List<Note> notes) {
             this.notes = notes;
         }
 
 
-
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return notes.size();
         }
 
         @Override
-        public Note getItem(int position)
-        {
+        public Note getItem(int position) {
             return notes.get(position);
         }
 
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-            if(convertView==null)
-            {
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
                 //LayoutInflater inflater = LayoutInflater.from(getC)
                 convertView = getLayoutInflater().inflate(R.layout.list_element_layout, null);
             }
@@ -229,7 +232,6 @@ public class ListNotesActivity extends AppCompatActivity {
 
 
     }
-
 
 
 }

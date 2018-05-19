@@ -60,6 +60,7 @@
         android:layout_alignStart="@+id/to_pay"
         android:layout_below="@+id/to_pay"
         android:layout_marginTop="44dp"
+        android:inputType="number|numberSigned|numberDecimal"
         android:text="TextView"
         tools:layout_editor_absoluteX="188dp"
         tools:layout_editor_absoluteY="193dp" />

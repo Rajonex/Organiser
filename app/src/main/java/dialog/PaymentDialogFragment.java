@@ -13,13 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dell.organizerkorepetytora.GroupOptionsActivity;
-import com.example.dell.organizerkorepetytora.ListGroupLessonsActivity;
-import com.example.dell.organizerkorepetytora.PaymentActivity;
+import activities.PaymentActivity;
 import com.example.dell.organizerkorepetytora.R;
-
-import java.util.Calendar;
-import java.util.List;
 
 import rest.SaldoRetrofitService;
 import retrofit2.Call;

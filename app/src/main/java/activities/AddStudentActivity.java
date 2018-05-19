@@ -1,5 +1,7 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import rest.StudentRetrofitService;
 import retrofit2.Call;
@@ -30,9 +35,18 @@ public class AddStudentActivity extends AppCompatActivity {
     EditText studentLastName;
     EditText studentPhone;
     EditText studentEmail;
+    ProgressDialog progressDialog;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_student);
 
@@ -43,38 +57,29 @@ public class AddStudentActivity extends AppCompatActivity {
     }
 
 
+    public void InitializeElements() {
+        toolbar = (Toolbar) findViewById(R.id.appBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-public void InitializeElements()
-{
-    toolbar = (Toolbar)findViewById(R.id.appBar);
-    setSupportActionBar(toolbar);
-    getSupportActionBar().setDisplayShowTitleEnabled(false);
+        buttonHome = (ImageButton) findViewById(R.id.button_home);
+        buttonSave = (ImageButton) findViewById(R.id.button_save);
 
-    buttonHome = (ImageButton)findViewById(R.id.button_home);
-    buttonSave = (ImageButton) findViewById(R.id.button_save);
+        studentName = (EditText) findViewById(R.id.add_student_name);
+        studentLastName = (EditText) findViewById(R.id.add_student_lastname);
+        studentPhone = (EditText) findViewById(R.id.add_student_phone);
+        studentEmail = (EditText) findViewById(R.id.add_student_email);
 
-    studentName = (EditText) findViewById(R.id.add_student_name);
-    studentLastName = (EditText) findViewById(R.id.add_student_lastname);
-    studentPhone = (EditText) findViewById(R.id.add_student_phone);
-    studentEmail = (EditText) findViewById(R.id.add_student_email);
-
-}
+    }
 
 
-
-
-
-    public void InitializeActions()
-    {
+    public void InitializeActions() {
 
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 startActivity(new Intent(AddStudentActivity.this, FirstScreenActivity.class));
-
             }
-
         });
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -89,18 +94,19 @@ public void InitializeElements()
                 String email = studentEmail.getText().toString();
 
                 Student student = new Student(1L, name, lastName, phone, email, token, true);
+
+                progressDialog = new ProgressDialog(AddStudentActivity.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Dodawanie");
+                progressDialog.show();
                 addStudent(student);
-
-
             }
 
         });
     }
 
 
-
-    private void addStudent(Student student)
-    {
+    private void addStudent(Student student) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         StudentRetrofitService studentRetrofitService = retrofit.create(StudentRetrofitService.class);
@@ -114,18 +120,23 @@ public void InitializeElements()
             @Override
             public void onResponse(Call<Ack> call, Response<Ack> response) {
                 Ack ack = response.body();
-                if(ack != null) {
-
+                if (ack != null) {
                     if (ack.isConfirm()) {
+                        progressDialog.dismiss();
                         startActivity(new Intent(AddStudentActivity.this, ListStudentsActivity.class));
+                    } else {
+                        Toast.makeText(AddStudentActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(AddStudentActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                 }
-
+                progressDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(AddStudentActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
 

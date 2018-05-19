@@ -1,5 +1,6 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +40,20 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
     SharedPreferences teacherToken;
     String token;
     Lesson singleLesson;
+    ProgressDialog progressDialogGetLesson;
+    ProgressDialog progressDialogGetGroupLesson;
     long groupId;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_group_lessons);
 
@@ -67,10 +81,15 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        buttonHome = (ImageButton)findViewById(R.id.button_home);
+        buttonHome = (ImageButton) findViewById(R.id.button_home);
         listLessons = (ListView) findViewById(R.id.list);
 
         listOfLessons = new ArrayList<>();
+
+        progressDialogGetGroupLesson = new ProgressDialog(ListGroupLessonsActivity.this);
+        progressDialogGetGroupLesson.setIndeterminate(true);
+        progressDialogGetGroupLesson.setMessage("Ładowanie...");
+        progressDialogGetGroupLesson.show();
         getGroupLessons(groupId);
 
 
@@ -88,10 +107,11 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
                 editor.putString("token", token);
                 editor.commit();
 
-
+                progressDialogGetLesson = new ProgressDialog(ListGroupLessonsActivity.this);
+                progressDialogGetLesson.setIndeterminate(true);
+                progressDialogGetLesson.setMessage("Pobieranie");
+                progressDialogGetLesson.show();
                 getLesson(id);
-
-
             }
         });
 
@@ -116,6 +136,7 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
         lessonCall.enqueue(new Callback<Lesson>() {
             @Override
             public void onResponse(Call<Lesson> call, Response<Lesson> response) {
+                progressDialogGetLesson.dismiss();
                 Lesson lesson = response.body();
                 if (lesson != null) {
                     singleLesson = lesson;
@@ -140,11 +161,16 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
 
                     startActivity(appInfo);
                 }
+                else
+                {
+                    Toast.makeText(ListGroupLessonsActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<Lesson> call, Throwable t) {
-
+                progressDialogGetLesson.dismiss();
+                Toast.makeText(ListGroupLessonsActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -160,20 +186,22 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
         lessonCall.enqueue(new Callback<List<MiniLesson>>() {
             @Override
             public void onResponse(Call<List<MiniLesson>> call, Response<List<MiniLesson>> response) {
+                progressDialogGetGroupLesson.dismiss();
                 List<MiniLesson> miniLessons = response.body();
                 if (miniLessons != null) {
                     listOfLessons = miniLessons;
 
                     listLessons.setAdapter(new LessonListAdapter(listOfLessons));
                 } else {
-                    //txtView.setText("Size < 1");
+                    Toast.makeText(ListGroupLessonsActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<List<MiniLesson>> call, Throwable t) {
-                //txtView.setText("Failure");
+                progressDialogGetGroupLesson.dismiss();
+                Toast.makeText(ListGroupLessonsActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,20 +1,20 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
-import android.app.Activity;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -27,7 +27,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import sends.Lesson;
-import sends.Note;
 import sends.Student;
 import sends.StudentPresent;
 import utils.Adress;
@@ -52,9 +51,18 @@ public class ViewLessonActivity extends AppCompatActivity {
     TextView lessonTopic;
     TextView lessonDescription;
     TextView lessonDate;
+    ProgressDialog progressDialog;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_lesson);
 
@@ -66,47 +74,45 @@ public class ViewLessonActivity extends AppCompatActivity {
         lessonId = bundle.getLong("id");
         groupId = bundle.getLong("groupId");
 
-       initializeElements();
-       initializeActions();
+        initializeElements();
+        initializeActions();
 
     }
 
-    public void initializeElements()
-    {
+    public void initializeElements() {
 
         teacherToken = getSharedPreferences(PREFS, 0);
         token = teacherToken.getString("token", "brak tokenu");
 
-        Toolbar toolbar = (Toolbar)findViewById(R.id.appBarHomeEdit);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.appBarHomeEdit);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
-        buttonHome = (ImageButton)findViewById(R.id.button_home);
+        buttonHome = (ImageButton) findViewById(R.id.button_home);
         buttonEdit = (ImageButton) findViewById(R.id.button_edit);
 
 
-
-        lessonTopic = (TextView)  findViewById(R.id.lesson_topic);
+        lessonTopic = (TextView) findViewById(R.id.lesson_topic);
         lessonDescription = (TextView) findViewById(R.id.lesson_data);
         lessonDate = (TextView) findViewById(R.id.lesson_date);
 
-        listStudents = (ListView)findViewById(R.id.list);
+        listStudents = (ListView) findViewById(R.id.list);
 
+        progressDialog = new ProgressDialog(ViewLessonActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Pobieranie");
+        progressDialog.show();
         getLesson(lessonId);
-
 
 
     }
 
-    public void initializeActions()
-    {
+    public void initializeActions() {
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 startActivity(new Intent(ViewLessonActivity.this, FirstScreenActivity.class));
-
             }
 
         });
@@ -150,6 +156,7 @@ public class ViewLessonActivity extends AppCompatActivity {
         lessonCall.enqueue(new Callback<Lesson>() {
             @Override
             public void onResponse(Call<Lesson> call, Response<Lesson> response) {
+                progressDialog.dismiss();
                 Lesson lesson = response.body();
                 if (lesson != null) {
                     singleLesson = lesson;
@@ -160,9 +167,8 @@ public class ViewLessonActivity extends AppCompatActivity {
                     lessonDate.setText(dateSql.toString(), TextView.BufferType.EDITABLE);
 
                     List<Student> students = new ArrayList<>();
-                    for(StudentPresent studentPresent : singleLesson.getStudentPresent()) {
-                        if (studentPresent.isPresence())
-                        {
+                    for (StudentPresent studentPresent : singleLesson.getStudentPresent()) {
+                        if (studentPresent.isPresence()) {
                             students.add(studentPresent.getStudent());
                         }
                     }
@@ -188,11 +194,15 @@ public class ViewLessonActivity extends AppCompatActivity {
 //
 //                    startActivity(appInfo);
                 }
+                else{
+                    Toast.makeText(ViewLessonActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<Lesson> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(ViewLessonActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -202,36 +212,29 @@ public class ViewLessonActivity extends AppCompatActivity {
         private List<Student> studentsPresent;
 
 
-        public StudentPresentListAdapter(List<Student> students)
-        {
+        public StudentPresentListAdapter(List<Student> students) {
             this.studentsPresent = students;
         }
 
 
-
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return studentsPresent.size();
         }
 
         @Override
-        public Student getItem(int position)
-        {
+        public Student getItem(int position) {
             return studentsPresent.get(position);
         }
 
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
-            if(convertView==null)
-            {
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
                 //LayoutInflater inflater = LayoutInflater.from(getC)
                 convertView = getLayoutInflater().inflate(R.layout.list_element_layout, null);
             }

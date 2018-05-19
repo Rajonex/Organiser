@@ -1,5 +1,6 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +38,19 @@ public class ListStudentsActivity extends AppCompatActivity {
     List<Student> listOfStudents;
     SharedPreferences teacherToken;
     String token;
-
+    ProgressDialog progressDialog;
     public static final String PREFS = "teacherToken";
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_students);
 
@@ -69,9 +81,14 @@ public class ListStudentsActivity extends AppCompatActivity {
         listStudents = (ListView) findViewById(R.id.list);
 
         listOfStudents = new ArrayList<>();
-        getAllStudents();
-//
         listStudents.setAdapter(new StudentListAdapter(listOfStudents));
+
+        progressDialog = new ProgressDialog(ListStudentsActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Pobieranie");
+        progressDialog.show();
+        getAllStudents();
+
 
 
     }
@@ -107,7 +124,6 @@ public class ListStudentsActivity extends AppCompatActivity {
                 startActivity(appInfo);
 
 
-
             }
         });
 
@@ -138,8 +154,7 @@ public class ListStudentsActivity extends AppCompatActivity {
 
     }
 
-    private void getAllStudents()
-    {
+    private void getAllStudents() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         StudentRetrofitService studentRetrofitService = retrofit.create(StudentRetrofitService.class);
@@ -151,24 +166,23 @@ public class ListStudentsActivity extends AppCompatActivity {
         studentCall.enqueue(new Callback<List<Student>>() {
             @Override
             public void onResponse(Call<List<Student>> call, Response<List<Student>> response) {
+                progressDialog.dismiss();
                 List<Student> students = response.body();
-                if(students != null)
-                {
-                    for(Student student : students)
-                    {
+                if (students != null) {
+                    for (Student student : students) {
 
                         listOfStudents.add(student);
                         listStudents.invalidateViews();
                     }
-                } else
-                {
-//
+                } else {
+                    Toast.makeText(ListStudentsActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Student>> call, Throwable t) {
-                System.out.println("Blad studenta");
+                progressDialog.dismiss();
+                Toast.makeText(ListStudentsActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }

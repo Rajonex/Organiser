@@ -74,7 +74,7 @@
 
     <fragment
         android:id="@+id/checkbox_student_list"
-        android:name="com.example.dell.organizerkorepetytora.CheckboxStudentListActivity"
+        android:name="activities.CheckboxStudentListActivity"
         android:layout_width="match_parent"
         android:layout_height="175dp" />
 

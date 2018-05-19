@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dell.organizerkorepetytora.MainActivity">
+    tools:context="activities.MainActivity">
 
 
     <TextView
@@ -43,7 +43,7 @@
         android:layout_below="@+id/textView3"
         android:layout_weight="2"
         android:ems="2"
-        android:inputType="textPersonName" />
+        android:inputType="textPassword" />
 
 
     <Button

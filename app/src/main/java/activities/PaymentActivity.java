@@ -1,6 +1,6 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,26 +9,24 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.Calendar;
+import com.example.dell.organizerkorepetytora.R;
+
 import java.util.List;
 
 import dialog.PaymentDialogFragment;
 import rest.SaldoRetrofitService;
-import rest.StudentRetrofitService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import sends.MiniGroup;
 import sends.Saldo;
-import sends.Student;
 import utils.Adress;
 
 public class PaymentActivity extends AppCompatActivity {
@@ -52,13 +50,22 @@ public class PaymentActivity extends AppCompatActivity {
     private TextView nrLessonsDone;
     private TextView sumToPay;
     private TextView sumPayed;
+    ProgressDialog progressDialog;
 
     private long groupId;
     private int year;
     private int month;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment);
 
@@ -87,21 +94,10 @@ public class PaymentActivity extends AppCompatActivity {
         lessonMonth = (TextView) findViewById(R.id.lessons_month);
         tableLayout = (TableLayout) findViewById(R.id.tableLayout);
 
-//        TableRow tableRow = new TableRow(this);
-//        View view = LayoutInflater.from(this).inflate(R.layout.table_element_payment, null, false);
-//        nameLastname = (TextView) view.findViewById(R.id.name_lastname);
-//        nrLessonsDone = (TextView) view.findViewById(R.id.nr_lessons_done);
-//        sumToPay = (TextView) view.findViewById(R.id.sum_to_pay);
-//        sumPayed = (TextView) view.findViewById(R.id.sum_payed);
-//
-//        nameLastname.setText("Student");
-//        nrLessonsDone.setText("Lekcje");
-//        sumToPay.setText("Do zapłaty");
-//        sumPayed.setText("Zapłacono");
-//
-//        tableRow.addView(view);
-//        tableLayout.addView(tableRow);
-
+        progressDialog = new ProgressDialog(PaymentActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Pobieranie");
+        progressDialog.show();
         getSaldos(this, month, year, groupId);
 
     }
@@ -122,11 +118,14 @@ public class PaymentActivity extends AppCompatActivity {
 
                 tableLayout.removeAllViewsInLayout();
                 month++;
-                if(month>12)
-                {
+                if (month > 12) {
                     year++;
                     month = 1;
                 }
+                progressDialog = new ProgressDialog(PaymentActivity.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Pobieranie");
+                progressDialog.show();
                 getSaldos(PaymentActivity.this, month, year, groupId);
             }
         });
@@ -136,11 +135,14 @@ public class PaymentActivity extends AppCompatActivity {
             public void onClick(View view) {
                 tableLayout.removeAllViewsInLayout();
                 month--;
-                if(month<1)
-                {
+                if (month < 1) {
                     year--;
                     month = 12;
                 }
+                progressDialog = new ProgressDialog(PaymentActivity.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Pobieranie");
+                progressDialog.show();
                 getSaldos(PaymentActivity.this, month, year, groupId);
 //                Intent appInfo = new Intent(PaymentActivity.this, PaymentActivity.class);
 //
@@ -157,7 +159,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void getSaldos(Context context, int month, int year, long groupId) {
         // Ustawianie daty
-        lessonMonth.setText(""+month+"."+year);
+        lessonMonth.setText("" + month + "." + year);
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
@@ -184,8 +186,8 @@ public class PaymentActivity extends AppCompatActivity {
         callSaldo.enqueue(new Callback<List<Saldo>>() {
             @Override
             public void onResponse(Call<List<Saldo>> call, Response<List<Saldo>> response) {
+                progressDialog.dismiss();
                 List<Saldo> saldos = response.body();
-                System.out.println(saldos);
                 if (saldos != null) {
                     for (Saldo saldo : saldos) {
                         TableRow tableRow = new TableRow(context);
@@ -209,11 +211,15 @@ public class PaymentActivity extends AppCompatActivity {
                         tableLayout.addView(tableRow);
                     }
                 }
+                else{
+                    Toast.makeText(context, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<List<Saldo>> call, Throwable t) {
-                System.out.println("Nie udalo sie polaczyc");
+                progressDialog.dismiss();
+                Toast.makeText(context, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }

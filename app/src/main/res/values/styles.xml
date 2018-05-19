@@ -18,6 +18,23 @@
         <item name="android:statusBarColor">@color/lineColor</item>
     </style>
 
+    <style name="MyTheme1" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/lineColor</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/lineColor</item>
+        <item name="android:textColorSecondary">@color/lineColor</item>
+        <item name="android:textColorSecondaryInverse">@android:color/holo_orange_dark</item>
+        <item name="android:textColorPrimaryInverse">@android:color/holo_orange_dark</item>
+        <item name="android:colorBackground">@color/background_material_light</item>
+        <item name="android:colorButtonNormal">@color/buttonColor</item>
+        <item name="colorButtonNormal">@color/buttonColor</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/lineColor</item>
+        <item name="android:statusBarColor">@color/lineColor</item>
+    </style>
+
     <!--<style name="MyTheme.NoActionBar">-->
         <!--<item name="windowActionBar">false</item>-->
         <!--<item name="windowNoTitle">true</item>-->
@@ -29,9 +46,13 @@
 
     <style name="Theme.MyTheme.Light.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar" />
 
-    <style name="BrightTheme" parent="Theme.AppCompat.Light.NoActionBar" >
+    <style name="DefaultTheme" parent="Theme.AppCompat.Light.NoActionBar" >
         <item name="android:colorBackground">@color/background_material_light</item>
     </style>
+
+    <style name="DarkTheme" parent="Theme.AppCompat.NoActionBar" />
+
+    <style name="BrightTheme" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar" />-->
 

@@ -1,7 +1,7 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
 import android.app.Activity;
-import android.app.TimePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +20,9 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,17 +64,27 @@ public class AddGroupActivity extends AppCompatActivity {
     Spinner spinner;
 
     TimePickerDialogFragment timePickerDialogFragment;
-
+    ProgressDialog progressDialog;
+    ProgressDialog progressDialogAdding;
     List<Student> studentInGroup;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_group);
 
 
         initializeElements();
-        initializeActions();
+        initializeActions(this);
 
     }
 
@@ -96,8 +109,7 @@ public class AddGroupActivity extends AppCompatActivity {
         listStudents = (ListView) findViewById(R.id.lesson_attendance_list);
 
         List<String> arraySpinner = new ArrayList<>();
-        for(Day day : Day.values())
-        {
+        for (Day day : Day.values()) {
             arraySpinner.add(day.getDescription());
         }
 
@@ -107,12 +119,20 @@ public class AddGroupActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+
+        progressDialog = new ProgressDialog(AddGroupActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Pobieranie dantych");
+        progressDialog.show();
+
         getAllStudents(this);
+
+
 
     }
 
 
-    public void initializeActions() {
+    public void initializeActions(Context context) {
 
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,17 +154,14 @@ public class AddGroupActivity extends AppCompatActivity {
                 List<GroupCalendar> lessonsDays = new ArrayList<GroupCalendar>();
 
                 Day d = null;
-                for(Day day : Day.values())
-                {
-                    if(day.getDescription().equals((String)spinner.getSelectedItem()))
-                    {
+                for (Day day : Day.values()) {
+                    if (day.getDescription().equals((String) spinner.getSelectedItem())) {
                         d = day;
                     }
                 }
                 System.out.println(d);
 
-                if(d != null)
-                {
+                if (d != null) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.set(Calendar.HOUR_OF_DAY, timePickerDialogFragment.getHourOfDay());
                     calendar.set(Calendar.MINUTE, timePickerDialogFragment.getMinute());
@@ -157,7 +174,11 @@ public class AddGroupActivity extends AppCompatActivity {
 
                 Group group = new Group(1L, groupName, studentsInGroup, Double.parseDouble(groupPayment), token, true, lessonsDays);
 
-                addGroup(group);
+                progressDialogAdding = new ProgressDialog(AddGroupActivity.this);
+                progressDialogAdding.setIndeterminate(true);
+                progressDialogAdding.setMessage("Ładowanie...");
+                progressDialogAdding.show();
+                addGroup(group, context);
             }
         });
 
@@ -170,7 +191,7 @@ public class AddGroupActivity extends AppCompatActivity {
 
     }
 
-    private void addGroup(Group group) {
+    private void addGroup(Group group, Context context) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         GroupRetrofitService groupRetrofitService = retrofit.create(GroupRetrofitService.class);
@@ -182,8 +203,11 @@ public class AddGroupActivity extends AppCompatActivity {
             public void onResponse(Call<Ack> call, Response<Ack> response) {
                 Ack ack = response.body();
                 if (ack.isConfirm()) {
+                    progressDialogAdding.dismiss();
                     startActivity(new Intent(AddGroupActivity.this, ListGroupActivity.class));
                 } else {
+                    progressDialogAdding.dismiss();
+                    Toast.makeText(((Activity)context), "Błąd dodania grupy", Toast.LENGTH_SHORT).show();
 //                    txtView.setText("Nie dodano grupy, przyczyny - np. wymienieni studenci nalezacy do grupy nie istnieja, niepoprawny token nauczyciela lub inne");
                 }
 
@@ -191,7 +215,8 @@ public class AddGroupActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
-
+                progressDialogAdding.dismiss();
+                Toast.makeText(((Activity)context), "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -213,7 +238,7 @@ public class AddGroupActivity extends AppCompatActivity {
 
 
                     listOfStudents = students;
-                    System.out.println(students.get(1).getFirstname());
+//                    System.out.println(students.get(1).getFirstname());
 //                        listOfStudents = new ArrayList<>();
 //                        for(Student student : students)
 //                        {
@@ -227,13 +252,16 @@ public class AddGroupActivity extends AppCompatActivity {
 //                        txtView.setText(students.get(0).getLastname() + "+" + students.get(1).getLastname());
 
                 } else {
-//                    txtView.setText("NULL list");
+                    Toast.makeText(((Activity)context), "Brak danych.", Toast.LENGTH_SHORT).show();
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<List<Student>> call, Throwable t) {
-//                txtView.setText("Failure");
+                progressDialog.dismiss();
+
+                Toast.makeText(((Activity)context), "Błąd podczas łączenia z serwerem.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -310,8 +338,7 @@ public class AddGroupActivity extends AppCompatActivity {
 
             if (selectedStudents.contains(getItem(position))) {
                 viewHolder.checkBox.setChecked(true);
-            } else
-            {
+            } else {
                 viewHolder.checkBox.setChecked(false);
             }
 
@@ -323,11 +350,11 @@ public class AddGroupActivity extends AppCompatActivity {
             return rowView;
         }
 
-        private class AdapterOnClickListener implements View.OnClickListener{
+        private class AdapterOnClickListener implements View.OnClickListener {
             ViewHolder viewHolder;
             int position;
-            public AdapterOnClickListener(ViewHolder viewHolder, int position)
-            {
+
+            public AdapterOnClickListener(ViewHolder viewHolder, int position) {
                 this.viewHolder = viewHolder;
                 this.position = position;
             }

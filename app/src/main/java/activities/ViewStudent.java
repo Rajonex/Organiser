@@ -1,5 +1,6 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import rest.StudentRetrofitService;
 import retrofit2.Call;
@@ -37,14 +41,22 @@ public class ViewStudent extends AppCompatActivity {
     EditText studentEmail;
     ImageButton buttonHome;
     ImageButton buttonSave;
+    ProgressDialog progressDialog;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_student);
 
-        toolbar = (Toolbar)findViewById(R.id.appBarHomeSave);
+        toolbar = (Toolbar) findViewById(R.id.appBarHomeSave);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -55,11 +67,6 @@ public class ViewStudent extends AppCompatActivity {
         email = bundle.getString("email");
         teacherToken = bundle.getString("token");
         studentId = bundle.getLong("id");
-
-
-
-
-
 
 
 //        Bundle bundle = getIntent().getExtras();
@@ -74,9 +81,8 @@ public class ViewStudent extends AppCompatActivity {
     }
 
 
-    public void initializeElements()
-    {
-        buttonHome = (ImageButton)findViewById(R.id.button_home);
+    public void initializeElements() {
+        buttonHome = (ImageButton) findViewById(R.id.button_home);
         buttonSave = (ImageButton) findViewById(R.id.button_save);
 
         studentName = (EditText) findViewById(R.id.student_name);
@@ -91,14 +97,11 @@ public class ViewStudent extends AppCompatActivity {
 
     }
 
-    public void initializeActions()
-    {
+    public void initializeActions() {
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 startActivity(new Intent(ViewStudent.this, FirstScreenActivity.class));
-
             }
 
         });
@@ -116,6 +119,11 @@ public class ViewStudent extends AppCompatActivity {
                 long id = studentId;
 
                 Student student = new Student(id, name, lastname, phone, email, token, true);
+
+                progressDialog = new ProgressDialog(ViewStudent.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Dodawanie");
+                progressDialog.show();
                 updateStudent(student);
 
 
@@ -126,8 +134,7 @@ public class ViewStudent extends AppCompatActivity {
     }
 
 
-    private void updateStudent(Student student)
-    {
+    private void updateStudent(Student student) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         StudentRetrofitService studentRetrofitService = retrofit.create(StudentRetrofitService.class);
@@ -138,19 +145,27 @@ public class ViewStudent extends AppCompatActivity {
         studentCall.enqueue(new Callback<Ack>() {
             @Override
             public void onResponse(Call<Ack> call, Response<Ack> response) {
+                progressDialog.dismiss();
                 Ack ack = response.body();
-                if(ack != null) {
+                if (ack != null) {
 
                     if (ack.isConfirm()) {
                         startActivity(new Intent(ViewStudent.this, ListStudentsActivity.class));
                     }
+                    else{
+                        Toast.makeText(ViewStudent.this, "Błąd podczas aktualizacji", Toast.LENGTH_SHORT).show();
+                    }
+                }else
+                {
+                    Toast.makeText(ViewStudent.this, "Błąd podczas aktualizacji", Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(ViewStudent.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }

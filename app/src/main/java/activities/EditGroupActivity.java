@@ -1,6 +1,7 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,8 +20,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.sql.Time;
+import com.example.dell.organizerkorepetytora.R;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,11 +61,22 @@ public class EditGroupActivity extends AppCompatActivity {
     Group singleGroup;
     Spinner spinner;
     Button buttonHour;
+    ProgressDialog progressDialogGetGroup;
+    ProgressDialog progressDialogGetStudents;
+    ProgressDialog progressDialogEditGroup;
 
     TimePickerDialogFragment timePickerDialogFragment;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_group);
 
@@ -93,8 +107,7 @@ public class EditGroupActivity extends AppCompatActivity {
         buttonHour = (Button) findViewById(R.id.button_hour);
 
         List<String> arraySpinner = new ArrayList<>();
-        for(Day day : Day.values())
-        {
+        for (Day day : Day.values()) {
             arraySpinner.add(day.getDescription());
         }
 
@@ -106,20 +119,13 @@ public class EditGroupActivity extends AppCompatActivity {
 
         groupName = (EditText) findViewById(R.id.add_group_name);
         groupRate = (EditText) findViewById(R.id.add_group_payment);
-
-        getGroup(this);
-//        //TODO pobrac wszystkich studentow, zaznaczyc tych, ktorzy sa w danej grupie. Wykonac to najlepiej synchronicznie, zeby po pierwszym pobraniu wykonac drugie, a dopiero po drugim pobraniu stworzyc i odswiezyc widok
-
-
         listStudents = (ListView) findViewById(R.id.lesson_attendance_list);
-        // listStudents.setOnItemClickListener(new CheckBoxClick());
 
-
-//        listOfStudents = new ArrayList<>();
-//        getAllStudents();
-//        public Student(long id, String firstname, String lastname, String phone, String email, String teacherToken,
-//        boolean activity) {
-//        listOfStudents.add(new Student(1, "student", "nazwisko", "111", "aaaa", token, false));
+        progressDialogGetGroup = new ProgressDialog(EditGroupActivity.this);
+        progressDialogGetGroup.setIndeterminate(true);
+        progressDialogGetGroup.setMessage("Pobieranie");
+        progressDialogGetGroup.show();
+        getGroup();
 
 
     }
@@ -149,16 +155,13 @@ public class EditGroupActivity extends AppCompatActivity {
                     List<GroupCalendar> lessonsDays = singleGroup.getGroupCalendar();
 
                     Day d = null;
-                    for(Day day : Day.values())
-                    {
-                        if(day.getDescription().equals((String)spinner.getSelectedItem()))
-                        {
+                    for (Day day : Day.values()) {
+                        if (day.getDescription().equals((String) spinner.getSelectedItem())) {
                             d = day;
                         }
                     }
 
-                    if(d != null)
-                    {
+                    if (d != null) {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(Calendar.HOUR_OF_DAY, timePickerDialogFragment.getHourOfDay());
                         calendar.set(Calendar.MINUTE, timePickerDialogFragment.getMinute());
@@ -166,13 +169,11 @@ public class EditGroupActivity extends AppCompatActivity {
                         calendar.set(Calendar.MILLISECOND, 0);
 
 
-                        if(lessonsDays.size() > 0)
-                        {
+                        if (lessonsDays.size() > 0) {
                             GroupCalendar groupCalendar = lessonsDays.get(0);
                             groupCalendar.setDay(d);
                             groupCalendar.setTime(calendar.getTime().getTime());
-                        }
-                        else {
+                        } else {
                             GroupCalendar groupCalendar = new GroupCalendar(1L, token, 1L, d, calendar.getTime().getTime());
                             lessonsDays.add(groupCalendar);
                         }
@@ -183,6 +184,11 @@ public class EditGroupActivity extends AppCompatActivity {
 
                     //TODO zmienic kalendarz z singleGroup na nowy kalendarz
                     Group editedGroup = new Group(singleGroup.getId(), name, ((CheckboxAdapterEditGroup) listStudents.getAdapter()).getStudentsInGroup(), rate, token, true, lessonsDays);
+                    progressDialogEditGroup = new ProgressDialog(EditGroupActivity.this);
+                    progressDialogEditGroup.setIndeterminate(true);
+                    progressDialogEditGroup.setMessage("Ładowanie...");
+                    progressDialogEditGroup.show();
+
                     editGroup(editedGroup);
                 }
             }
@@ -192,7 +198,7 @@ public class EditGroupActivity extends AppCompatActivity {
 
     }
 
-    private void getGroup(Context context) {
+    private void getGroup() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         GroupRetrofitService groupRetrofitService = retrofit.create(GroupRetrofitService.class);
@@ -202,6 +208,7 @@ public class EditGroupActivity extends AppCompatActivity {
         groupCall.enqueue(new Callback<Group>() {
             @Override
             public void onResponse(Call<Group> call, Response<Group> response) {
+                progressDialogGetGroup.dismiss();
                 Group group = response.body();
                 if (group != null && group.getGroupCalendar() != null) { // Zalozenie, ze zawsze podany jest termin
                     singleGroup = group;
@@ -211,7 +218,7 @@ public class EditGroupActivity extends AppCompatActivity {
                     Double rateDouble = new Double(singleGroup.getRate());
                     groupRate.setText(rateDouble.toString(), TextView.BufferType.EDITABLE);
 
-                    if(singleGroup.getGroupCalendar().size() > 0) {
+                    if (singleGroup.getGroupCalendar().size() > 0) {
                         String myString = singleGroup.getGroupCalendar().get(0).getDay().getDescription(); //the value you want the position for
                         ArrayAdapter myAdap = (ArrayAdapter) spinner.getAdapter(); //cast to an ArrayAdapter
                         int spinnerPosition = myAdap.getPosition(myString);
@@ -222,14 +229,21 @@ public class EditGroupActivity extends AppCompatActivity {
                         timePickerDialogFragment.setHourOfDay(calendar.get(Calendar.HOUR_OF_DAY));
                         timePickerDialogFragment.setMinute(calendar.get(Calendar.MINUTE));
                     }
-                    getAllStudents(context, studendsInGroup);
-                } else {//TODO pop-up
+                    progressDialogGetStudents = new ProgressDialog(EditGroupActivity.this);
+                    progressDialogGetStudents.setIndeterminate(true);
+                    progressDialogGetStudents.setMessage("Ładowanie...");
+                    progressDialogGetStudents.show();
+
+                    getAllStudents(EditGroupActivity.this, studendsInGroup);
+                } else {
+                    Toast.makeText(EditGroupActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
-
+                progressDialogGetGroup.dismiss();
+                Toast.makeText(EditGroupActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -244,19 +258,20 @@ public class EditGroupActivity extends AppCompatActivity {
         groupCall.enqueue(new Callback<Ack>() {
             @Override
             public void onResponse(Call<Ack> call, Response<Ack> response) {
+                progressDialogEditGroup.dismiss();
                 Ack ack = response.body();
                 if (ack.isConfirm()) {
-                    // Aktualizacja pomyslna
                     startActivity(new Intent(EditGroupActivity.this, ListGroupActivity.class));
                 } else {
-//                    txtView.setText("Nie dodano grupy, przyczyny - np. wymienieni studenci nalezacy do grupy nie istnieja, niepoprawny token nauczyciela lub inne");
+                    Toast.makeText(EditGroupActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
-
+                progressDialogEditGroup.dismiss();
+                Toast.makeText(EditGroupActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -266,13 +281,12 @@ public class EditGroupActivity extends AppCompatActivity {
 
         StudentRetrofitService studentRetrofitService = retrofit.create(StudentRetrofitService.class);
 
-        // String token = "a3b5af4d-4ed6-3497-a21a-6751fea9f7c0";
-
         Call<List<Student>> studentCall = studentRetrofitService.getStudents(token);
 
         studentCall.enqueue(new Callback<List<Student>>() {
             @Override
             public void onResponse(Call<List<Student>> call, Response<List<Student>> response) {
+                progressDialogGetStudents.dismiss();
                 List<Student> students = response.body();
                 if (students != null) {
                     listOfStudents = students;
@@ -280,13 +294,14 @@ public class EditGroupActivity extends AppCompatActivity {
                     listStudents.setItemsCanFocus(false);
                     listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 } else {
-//                    txtView.setText("NULL list");
+                    Toast.makeText(context, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Student>> call, Throwable t) {
-//                txtView.setText("Failure");
+                progressDialogGetStudents.dismiss();
+                Toast.makeText(context, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -358,8 +373,7 @@ public class EditGroupActivity extends AppCompatActivity {
 
             if (studentsInGroup.contains(getItem(position))) {
                 viewHolder.checkBox.setChecked(true);
-            } else
-            {
+            } else {
                 viewHolder.checkBox.setChecked(false);
             }
             viewHolder.text.setText(getItem(position).getFirstname() + " " + getItem(position).getLastname());

@@ -1,12 +1,17 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import rest.TeacherRetrofitService;
 import retrofit2.Call;
@@ -24,9 +29,18 @@ public class AddUserActivity extends AppCompatActivity {
     EditText editTextUsername;
     EditText editTextPassword;
     EditText editTextTeachername;
+    ProgressDialog progressDialog;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_user);
 
@@ -50,7 +64,10 @@ public class AddUserActivity extends AppCompatActivity {
         buttonZatwierdz.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                progressDialog = new ProgressDialog(AddUserActivity.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Dodawanie");
+                progressDialog.show();
                 addTeacher();
 
             }
@@ -85,31 +102,36 @@ public class AddUserActivity extends AppCompatActivity {
                         case 0: // it's ok, get teacher and save his token (save by SharedPreferences)
                         {
                             Teacher teacherForSave = resultTeacher.getTeacher();
+                            progressDialog.dismiss();
                             startActivity(new Intent(AddUserActivity.this, MainActivity.class));
                             break;
                         }
                         case 1: {
                             // name exists in database - can't create
+                            Toast.makeText(AddUserActivity.this, "Podana nazwa użytkownika już istnieje", Toast.LENGTH_LONG).show();
                             break;
                         }
                         case 2: {
                             // problem with create token - server problem
+                            Toast.makeText(AddUserActivity.this, "Błąd, nie utworzono tokenu bezpieczeństwa", Toast.LENGTH_SHORT).show();
                             break;
                         }
                         case 3: {
-                            // other error
+                            Toast.makeText(AddUserActivity.this, "Błąd danych", Toast.LENGTH_SHORT).show();
                             break;
                         }
                     }
-                } else // ???????
+                } else
                 {
-                    // TO DO
+                    Toast.makeText(AddUserActivity.this, "Błąd danych", Toast.LENGTH_SHORT).show();
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<ResultTeacher> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(AddUserActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
 

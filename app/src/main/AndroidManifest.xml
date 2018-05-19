@@ -10,8 +10,8 @@
         android:icon="@mipmap/ic_launcher"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <!-- <activity android:name="com.example.dell.organizerkorepetytora.MainActivity"> -->
-        <activity android:name=".MainActivity"
+        <!-- <activity android:naactivities.MainActivityvity"> -->
+        <activity android:name="activities.MainActivity"
             android:theme="@style/MyTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,45 +19,47 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FirstScreenActivity"
+        <activity android:name="activities.FirstScreenActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".AddUserActivity"
+        <activity android:name="activities.AddUserActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name="lesson.ListGroupInLessonActivity"
+        <activity android:name="activities.ListGroupInLessonActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name="lesson.AddLessonActivity"
+        <activity android:name="activities.AddLessonActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ListStudentPaymentActivity"
+        <activity android:name="activities.ListStudentPaymentActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".PaymentActivity"
+        <activity android:name="activities.PaymentActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".AddPaymentActivity"
+        <activity android:name="activities.AddPaymentActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ListGroupActivity"
+        <activity android:name="activities.ListGroupActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".GroupOptionsActivity"
+        <activity android:name="activities.GroupOptionsActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".EditGroupActivity"
+        <activity android:name="activities.EditGroupActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ListGroupLessonsActivity"
+        <activity android:name="activities.ListGroupLessonsActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ViewLessonActivity"
+        <activity android:name="activities.ViewLessonActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ListStudentsActivity"
+        <activity android:name="activities.ListStudentsActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".AddStudentActivity"
+        <activity android:name="activities.AddStudentActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ListNotesActivity"
+        <activity android:name="activities.ListNotesActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".AddNoteActivity"
+        <activity android:name="activities.AddNoteActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ViewNote"
+        <activity android:name="activities.ViewNote"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".ViewStudent"
+        <activity android:name="activities.ViewStudent"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".LessonEditActivity"
+        <activity android:name="activities.LessonEditActivity"
             android:theme="@style/MyTheme"/>
-        <activity android:name=".AddGroupActivity"
+        <activity android:name="activities.AddGroupActivity"
+            android:theme="@style/MyTheme"></activity>
+        <activity android:name="activities.SettingsActivity"
             android:theme="@style/MyTheme"></activity>
     </application>
 

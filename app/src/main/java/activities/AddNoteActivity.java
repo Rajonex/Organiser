@@ -1,5 +1,8 @@
-package com.example.dell.organizerkorepetytora;
+package activities;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.example.dell.organizerkorepetytora.R;
 
 import rest.NoteRetrofitService;
 import retrofit2.Call;
@@ -29,9 +35,18 @@ public class AddNoteActivity extends AppCompatActivity {
     EditText noteTitle;
     EditText noteContent;
     Toolbar toolbar;
+    ProgressDialog progressDialog;
+    public static final String PREFSTheme = "theme";
+    private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_note);
 
@@ -42,11 +57,11 @@ public class AddNoteActivity extends AppCompatActivity {
 
     private void initializeElements() {
 
-        toolbar = (Toolbar)findViewById(R.id.appBar);
+        toolbar = (Toolbar) findViewById(R.id.appBar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        buttonHome = (ImageButton)findViewById(R.id.button_home);
+        buttonHome = (ImageButton) findViewById(R.id.button_home);
         buttonSave = (ImageButton) findViewById(R.id.button_save);
         noteTitle = (EditText) findViewById(R.id.noteTitle);
         noteContent = (EditText) findViewById(R.id.noteContent);
@@ -82,7 +97,12 @@ public class AddNoteActivity extends AppCompatActivity {
 
                 Note note = new Note(id, token, title, text);
 
+                progressDialog = new ProgressDialog(AddNoteActivity.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setMessage("Dodawanie");
+                progressDialog.show();
                 addNote(note);
+
 
 
             }
@@ -92,12 +112,10 @@ public class AddNoteActivity extends AppCompatActivity {
     }
 
 
-    private void addNote(Note note)
-    {
+    private void addNote(Note note) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         NoteRetrofitService noteRetrofitService = retrofit.create(NoteRetrofitService.class);
-
 
 
         Call<Ack> noteCall = noteRetrofitService.addNote(note);
@@ -106,22 +124,26 @@ public class AddNoteActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Ack> call, Response<Ack> response) {
                 Ack ack = response.body();
-                if(ack != null)
-                {
-                    if(ack.isConfirm())
-                    {
+                if (ack != null) {
+                    if (ack.isConfirm()) {
+                        progressDialog.dismiss();
                         startActivity(new Intent(AddNoteActivity.this, ListNotesActivity.class));
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddNoteActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                     }
-                    else
-                    {
-
-                    }
+                }
+                else
+                {
+                    progressDialog.dismiss();
+                    Toast.makeText(AddNoteActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
-
+                progressDialog.dismiss();
+                Toast.makeText(AddNoteActivity.this, "Błąd podczas łączenie z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
 

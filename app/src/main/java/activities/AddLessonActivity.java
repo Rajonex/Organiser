@@ -1,7 +1,8 @@
-package lesson;
+package activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,8 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.dell.organizerkorepetytora.FirstScreenActivity;
 import com.example.dell.organizerkorepetytora.R;
 
 import java.text.SimpleDateFormat;
@@ -52,19 +53,29 @@ public class AddLessonActivity extends AppCompatActivity {
     ListView listStudents;
     List<Student> listOfStudents;
     Group singleGroup;
-    Context context;
     SharedPreferences teacherToken;
     String token;
     EditText lessonTopic;
     EditText lessonDescription;
     long id;
+    ProgressDialog progressDialogGetGroup;
+    ProgressDialog progressDialogAddLesson;
 
     Button buttonDate;
     Calendar calendar;
     DatePickerDialog.OnDateSetListener dateListener;
+    public static final String PREFSTheme = "theme";
+        private int themeCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
+        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+
+        setTheme(themeCode);
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_lesson);
 
@@ -114,7 +125,11 @@ public class AddLessonActivity extends AppCompatActivity {
 
         };
 
-        getGroup(this);
+        progressDialogGetGroup = new ProgressDialog(AddLessonActivity.this);
+        progressDialogGetGroup.setIndeterminate(true);
+        progressDialogGetGroup.setMessage("Pobieranie");
+        progressDialogGetGroup.show();
+        getGroup();
 
 
     }
@@ -145,16 +160,20 @@ public class AddLessonActivity extends AppCompatActivity {
 
                     Lesson lesson = new Lesson(1L, ((CheckboxAdapter) listStudents.getAdapter()).getSelectedStudents(), topic, description, calendar.getTimeInMillis(), singleGroup.getId(), token);
 
+                    progressDialogAddLesson = new ProgressDialog(AddLessonActivity.this);
+                    progressDialogAddLesson.setIndeterminate(true);
+                    progressDialogAddLesson.setMessage("Dodawanie");
+                    progressDialogAddLesson.show();
                     addLesson(lesson);
                 } else {
-                    //TODO pop up (nie pobrano danych grupy)
+                    Toast.makeText(AddLessonActivity.this, "Nie pobrano danych grupy", Toast.LENGTH_SHORT).show();
                 }
             }
 
         });
     }
 
-    private void getGroup(Context context) {
+    private void getGroup() {
 
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
@@ -167,10 +186,8 @@ public class AddLessonActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<Group> call, Response<Group> response) {
-                System.out.println("test");
                 Group group = response.body();
                 if (group != null) {
-                    System.out.println("grupa nie jest nullem");
                     singleGroup = group;
 
                     if (singleGroup.getGroupCalendar().size() > 0) {
@@ -179,18 +196,20 @@ public class AddLessonActivity extends AppCompatActivity {
                         buttonDate.setText(simpleDateFormat.format(calendar.getTime()));
                     }
 
-                    listStudents.setAdapter(new CheckboxAdapter(singleGroup.getStudents(), context));
+                    listStudents.setAdapter(new CheckboxAdapter(singleGroup.getStudents(), AddLessonActivity.this));
                     listStudents.setItemsCanFocus(false);
                     listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-                } else {//TODO pop-up
-                    System.out.println("grupa jest nullem");
+                } else {
+                    Toast.makeText(AddLessonActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
+                progressDialogGetGroup.dismiss();
             }
 
             @Override
             public void onFailure(Call<Group> call, Throwable t) {
-
+                progressDialogGetGroup.dismiss();
+                Toast.makeText(AddLessonActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -213,16 +232,25 @@ public class AddLessonActivity extends AppCompatActivity {
                 Ack ack = response.body();
                 if (ack != null) {
                     if (ack.isConfirm()) {
+                        progressDialogAddLesson.dismiss();
                         startActivity(new Intent(AddLessonActivity.this, ListGroupInLessonActivity.class));
                     } else {
 //                        txtView.setText("Nie dodano lekcji");
+                        progressDialogAddLesson.dismiss();
+                        Toast.makeText(AddLessonActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                     }
+                }
+                else
+                {
+                    progressDialogAddLesson.dismiss();
+                    Toast.makeText(AddLessonActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
-
+                progressDialogAddLesson.dismiss();
+                Toast.makeText(AddLessonActivity.this, "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
