@@ -42,14 +42,20 @@ public class ListStudentPaymentActivity extends AppCompatActivity {
     List<MiniGroup> listOfGroups;
     public static final String PREFSTheme = "theme";
     private int themeCode;
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
-        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
-
-        setTheme(themeCode);
+        int themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+        for (int i : styleThemeTab) {
+            if (i == themeCode)
+                flag = true;
+        }
+        if (flag) {
+            setTheme(themeCode);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_student_payment);
@@ -129,9 +135,7 @@ public class ListStudentPaymentActivity extends AppCompatActivity {
 
                     listOfGroups = miniGroupList;
                     listGroups.setAdapter(new ListStudentPaymentActivity.GroupListAdapter(listOfGroups));
-                }
-                else
-                {
+                } else {
                     Toast.makeText(ListStudentPaymentActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
 

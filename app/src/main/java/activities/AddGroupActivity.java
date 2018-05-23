@@ -69,15 +69,20 @@ public class AddGroupActivity extends AppCompatActivity {
     List<Student> studentInGroup;
     public static final String PREFSTheme = "theme";
     private int themeCode;
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
-        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
-
-        setTheme(themeCode);
+        int themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+        for (int i : styleThemeTab) {
+            if (i == themeCode)
+                flag = true;
+        }
+        if (flag) {
+            setTheme(themeCode);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_group);
@@ -126,7 +131,6 @@ public class AddGroupActivity extends AppCompatActivity {
         progressDialog.show();
 
         getAllStudents(this);
-
 
 
     }
@@ -207,7 +211,7 @@ public class AddGroupActivity extends AppCompatActivity {
                     startActivity(new Intent(AddGroupActivity.this, ListGroupActivity.class));
                 } else {
                     progressDialogAdding.dismiss();
-                    Toast.makeText(((Activity)context), "Błąd dodania grupy", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(((Activity) context), "Błąd dodania grupy", Toast.LENGTH_SHORT).show();
 //                    txtView.setText("Nie dodano grupy, przyczyny - np. wymienieni studenci nalezacy do grupy nie istnieja, niepoprawny token nauczyciela lub inne");
                 }
 
@@ -216,7 +220,7 @@ public class AddGroupActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Ack> call, Throwable t) {
                 progressDialogAdding.dismiss();
-                Toast.makeText(((Activity)context), "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
+                Toast.makeText(((Activity) context), "Błąd podczas łączenia z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -252,7 +256,7 @@ public class AddGroupActivity extends AppCompatActivity {
 //                        txtView.setText(students.get(0).getLastname() + "+" + students.get(1).getLastname());
 
                 } else {
-                    Toast.makeText(((Activity)context), "Brak danych.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(((Activity) context), "Brak danych.", Toast.LENGTH_SHORT).show();
                 }
                 progressDialog.dismiss();
             }
@@ -261,7 +265,7 @@ public class AddGroupActivity extends AppCompatActivity {
             public void onFailure(Call<List<Student>> call, Throwable t) {
                 progressDialog.dismiss();
 
-                Toast.makeText(((Activity)context), "Błąd podczas łączenia z serwerem.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(((Activity) context), "Błąd podczas łączenia z serwerem.", Toast.LENGTH_SHORT).show();
             }
         });
     }

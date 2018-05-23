@@ -57,14 +57,20 @@ public class PaymentActivity extends AppCompatActivity {
     private int month;
     public static final String PREFSTheme = "theme";
     private int themeCode;
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
-        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
-
-        setTheme(themeCode);
+        int themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+        for (int i : styleThemeTab) {
+            if (i == themeCode)
+                flag = true;
+        }
+        if (flag) {
+            setTheme(themeCode);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment);
@@ -210,8 +216,7 @@ public class PaymentActivity extends AppCompatActivity {
                         tableRow.addView(view);
                         tableLayout.addView(tableRow);
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(context, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
             }

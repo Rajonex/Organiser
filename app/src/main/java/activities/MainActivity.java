@@ -44,13 +44,26 @@ public class MainActivity extends AppCompatActivity {
     EditText ed1;
     EditText ed2;
 
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
         int themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+        for(int i: styleThemeTab)
+        {
+            if(i == themeCode)
+                flag = true;
+        }
+        if(flag) {
+            setTheme(themeCode);
+        }
+//        SharedPreferences sharedPreferences = getSharedPreferences(PREFSTheme, 0);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putInt("theme", R.style.DefaultTheme);
+//        editor.commit();
 
-        setTheme(themeCode);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

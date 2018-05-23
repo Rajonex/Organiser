@@ -30,15 +30,21 @@ public class SettingsActivity extends AppCompatActivity {
     private Map<String, Integer> themesMap;
     private ImageButton buttonHome;
     private int themeCode;
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
         themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
-
-        setTheme(themeCode);
+        for (int i : styleThemeTab) {
+            if (i == themeCode)
+                flag = true;
+        }
+        if (flag) {
+            setTheme(themeCode);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
@@ -51,11 +57,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void initializeElements() {
         themesMap = new HashMap<>();
-        themesMap.put("Domyślny", R.style.DefaultTheme);
-        themesMap.put("Jasny", R.style.MyTheme1);
-        themesMap.put("Zrównoważony", R.style.MyTheme);
-        themesMap.put("Ciemny", R.style.DarkTheme);
-
+        themesMap.put("Domyślny", R.style.DefaultTheme); //ok
+        themesMap.put("Jasny", R.style.MyThemeLight);
+        themesMap.put("Zrównoważony", R.style.MyTheme); //ok
+        themesMap.put("Ciemny", R.style.DarkTheme); //ok
 
 
 //        themesMap.entrySet()
@@ -75,10 +80,8 @@ public class SettingsActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, arraySpinner);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        for(Map.Entry<String, Integer> entry: themesMap.entrySet())
-        {
-            if(entry.getValue() == themeCode)
-            {
+        for (Map.Entry<String, Integer> entry : themesMap.entrySet()) {
+            if (entry.getValue() == themeCode) {
                 spinner.setSelection(adapter.getPosition(entry.getKey()), false);
             }
         }
@@ -99,13 +102,13 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-                    ArrayAdapter<String> adapter = (ArrayAdapter<String>) adapterView.getAdapter();
-                    String selectedValue = adapter.getItem(i);
-                    int selectedTheme = themesMap.get(selectedValue);
-                    SharedPreferences sharedPreferences = getSharedPreferences(PREFSTheme, 0);
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt("theme", selectedTheme);
-                    editor.commit();
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) adapterView.getAdapter();
+                String selectedValue = adapter.getItem(i);
+                int selectedTheme = themesMap.get(selectedValue);
+                SharedPreferences sharedPreferences = getSharedPreferences(PREFSTheme, 0);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putInt("theme", selectedTheme);
+                editor.commit();
 //                    startActivity(new Intent(SettingsActivity.this, SettingsActivity.class));
                 finish();
                 startActivity(getIntent());
@@ -117,8 +120,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-
-
 
 
     }

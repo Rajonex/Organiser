@@ -42,14 +42,20 @@ public class ListGroupActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     public static final String PREFSTheme = "theme";
     private int themeCode;
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
-        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
-
-        setTheme(themeCode);
+        int themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+        for (int i : styleThemeTab) {
+            if (i == themeCode)
+                flag = true;
+        }
+        if (flag) {
+            setTheme(themeCode);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_group);
@@ -153,9 +159,7 @@ public class ListGroupActivity extends AppCompatActivity {
 //                    }
                     listOfGroups = miniGroupList;
                     listGroups.setAdapter(new GroupListAdapter(listOfGroups));
-                }
-                else
-                {
+                } else {
                     Toast.makeText(ListGroupActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
 

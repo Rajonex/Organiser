@@ -69,14 +69,20 @@ public class LessonEditActivity extends AppCompatActivity {
 
     public static final String PREFSTheme = "theme";
     private int themeCode;
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
-        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
-
-        setTheme(themeCode);
+        int themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+        for (int i : styleThemeTab) {
+            if (i == themeCode)
+                flag = true;
+        }
+        if (flag) {
+            setTheme(themeCode);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lesson_edit);
@@ -205,9 +211,7 @@ public class LessonEditActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(LessonEditActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else
-                {
+                } else {
                     Toast.makeText(LessonEditActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -250,8 +254,7 @@ public class LessonEditActivity extends AppCompatActivity {
                     listStudents.setItemsCanFocus(false);
                     listStudents.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
-                } else
-                {
+                } else {
                     Toast.makeText(LessonEditActivity.this, "Błąd podczas pobierania danych", Toast.LENGTH_SHORT).show();
                 }
             }

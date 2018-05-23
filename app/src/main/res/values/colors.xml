@@ -10,6 +10,20 @@
     <color name="buttonTextColor">#F2E6D8</color>
     <color name="actionBarColor">#B8AAB6</color>
     <color name="accent_material_light">#ffbd00</color>
+    <color name="primary_material_light">#f5f5f5</color>
+    <color name="primary_dark_material_light">#757575</color>
+    <color name="white">#ffffff</color>
+
+    <color name="myTheme_theme_background">#F4DFB7</color>
+    <color name="myTheme_theme_button">#F1975A</color>
+    <color name="myTheme_theme_accent">#1B2E41</color>
+
+    <color name="myThemeLight_theme_background">#FEFDFA</color>
+    <color name="myThemeLight_theme_button">#4C94A8</color>
+    <color name="myThemeLight_theme_accent">#C4C1C2</color>
+
+    <color name="default_theme_accent">#1C9FFF</color>
+
 
 
 </resources>

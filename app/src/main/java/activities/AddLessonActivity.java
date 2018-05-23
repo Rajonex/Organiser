@@ -65,15 +65,22 @@ public class AddLessonActivity extends AppCompatActivity {
     Calendar calendar;
     DatePickerDialog.OnDateSetListener dateListener;
     public static final String PREFSTheme = "theme";
-        private int themeCode;
+    private int themeCode;
+    int[] styleThemeTab = {R.style.DarkTheme, R.style.DefaultTheme, R.style.MyThemeLight, R.style.MyTheme};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        boolean flag = false;
         SharedPreferences ThemePreference = getSharedPreferences(PREFSTheme, 0);
-        themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
-
-        setTheme(themeCode);
+        int themeCode = ThemePreference.getInt("theme", R.style.DefaultTheme);
+        for (int i : styleThemeTab) {
+            if (i == themeCode)
+                flag = true;
+        }
+        if (flag) {
+            setTheme(themeCode);
+        }
 
 
         super.onCreate(savedInstanceState);
@@ -239,9 +246,7 @@ public class AddLessonActivity extends AppCompatActivity {
                         progressDialogAddLesson.dismiss();
                         Toast.makeText(AddLessonActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                     }
-                }
-                else
-                {
+                } else {
                     progressDialogAddLesson.dismiss();
                     Toast.makeText(AddLessonActivity.this, "Błąd podczas dodawania", Toast.LENGTH_SHORT).show();
                 }

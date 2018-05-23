@@ -31,7 +31,7 @@
         android:layout_weight="2"
         android:ems="10"
         android:inputType="textPersonName"
-        android:textColor="#000000" />
+        />
 
     <TextView
         android:id="@+id/textView13"
@@ -49,8 +49,7 @@
         android:layout_height="143dp"
         android:layout_weight="2"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:textColor="#000000" />
+        android:inputType="textPersonName"/>
 
     <TextView
         android:id="@+id/textView14"
@@ -69,7 +68,7 @@
         android:layout_weight="2"
         android:ems="1"
         android:inputType="textPersonName"
-        android:textColor="#000000" />
+        />
 
     <TextView
         android:id="@+id/textView4"
