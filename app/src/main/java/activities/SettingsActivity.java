@@ -55,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    
     private void initializeElements() {
         themesMap = new HashMap<>();
         themesMap.put("Domyślny", R.style.DefaultTheme); //ok
