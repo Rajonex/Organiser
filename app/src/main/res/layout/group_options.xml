@@ -1,50 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp">
 
 
     <Button
         android:id="@+id/button_show"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="43dp"
+        android:layout_width="match_parent"
+        android:layout_height="81dp"
         android:text="Pokaz lekcje"
-        app:layout_constraintBottom_toTopOf="@+id/button_edit"
-        app:layout_constraintEnd_toEndOf="@+id/button_edit"
-        app:layout_constraintStart_toStartOf="@+id/button_edit"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="80dp"
+
+
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 
     <Button
         android:id="@+id/button_edit"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="43dp"
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
         android:text="Edytuj"
-        app:layout_constraintBottom_toTopOf="@+id/button_del"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="80dp"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_show" />
-
-    <Button
-        android:id="@+id/button_del"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="43dp"
-        android:text="Usun"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_edit" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <!--TODO bez usuwania-->
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
 
 
 

@@ -240,7 +240,7 @@ public class AddLessonActivity extends AppCompatActivity {
                 if (ack != null) {
                     if (ack.isConfirm()) {
                         progressDialogAddLesson.dismiss();
-                        startActivity(new Intent(AddLessonActivity.this, ListGroupInLessonActivity.class));
+                        startActivity(new Intent(AddLessonActivity.this, FirstScreenActivity.class));
                     } else {
 //                        txtView.setText("Nie dodano lekcji");
                         progressDialogAddLesson.dismiss();

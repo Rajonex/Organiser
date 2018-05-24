@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREFSTheme = "theme";
 
     ProgressDialog progressDialog;
-    TextView txtView;
+    ProgressDialog progressDialogFirstRun;
+//    TextView txtView;
     Button button_logIn;
     Button button_signUp;
     EditText ed1;
@@ -92,11 +93,25 @@ public class MainActivity extends AppCompatActivity {
         button_signUp = (Button) findViewById(R.id.button_signUp);
         ed1 = (EditText) findViewById(R.id.editText1);
         ed2 = (EditText) findViewById(R.id.editText2);
-        txtView = (TextView) findViewById(R.id.textView9);
+//        txtView = (TextView) findViewById(R.id.textView9);
         SharedPreferences teacherToken = getSharedPreferences(PREFS, 0);
         String token = teacherToken.getString("token", "brak tokenu");
 
-        txtView.setText(token);
+//        txtView.setText(token);
+
+
+
+        progressDialogFirstRun = new ProgressDialog(MainActivity.this);
+        progressDialogFirstRun.setIndeterminate(true);
+        progressDialogFirstRun.setMessage("Ładowanie");
+        progressDialogFirstRun.show();
+
+        teacherToken = getSharedPreferences(PREFS, 0);
+        String login = teacherToken.getString("login", null);
+        String password = teacherToken.getString("password", null);
+
+        Teacher firstLoginTeacher = new Teacher(login, password, "", "");
+        getTeacherFirstRun(firstLoginTeacher);
     }
 
     private void initializeActions(Context context) {
@@ -104,11 +119,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                getTeacher(context);
+
+                String login = ed1.getText().toString();
+                String password = ed2.getText().toString();
+                Teacher loginTeacher = new Teacher(login, password, "", "");
+                getTeacher(loginTeacher);
 
                 progressDialog = new ProgressDialog(MainActivity.this);
                 progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("Ładowanie...");
+                progressDialog.setMessage("Ładowanie");
                 progressDialog.show();
 
 
@@ -151,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(calendars.size() > 0)
                     {
-                        txtView.setText(calendars.get(0).getGroupId() + ":" + calendars.get(0).getDay());
+//                        txtView.setText(calendars.get(0).getGroupId() + ":" + calendars.get(0).getDay());
                     }
                 }
             }
@@ -181,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(calendars.size() > 0)
                     {
-                        txtView.setText(calendars.get(0).getGroupId() + ":" + calendars.get(0).getDay());
+//                        txtView.setText(calendars.get(0).getGroupId() + ":" + calendars.get(0).getDay());
                     }
                 }
             }
@@ -195,19 +214,64 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void getTeacher(Context context) {
+    private void getTeacher(Teacher teacher) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
 
         TeacherRetrofitService teacherRetrofitService = retrofit.create(TeacherRetrofitService.class);
 
-        String name = ed1.getText().toString();
-        String password = ed2.getText().toString();
 
-        Call<Teacher> teacherCall = teacherRetrofitService.getTeacher(name, password);
+        Call<Teacher> teacherCall = teacherRetrofitService.getTeacher(teacher.getLogin(), teacher.getPassword());
 
         teacherCall.enqueue(new Callback<Teacher>() {
             @Override
             public void onResponse(Call<Teacher> call, Response<Teacher> response) {
+                progressDialog.dismiss();
+                Teacher resultTeacher = response.body();
+                if (resultTeacher != null) // in case if you insert correct name and password
+                {
+                    String token = resultTeacher.getToken();
+                    SharedPreferences teacherToken = getSharedPreferences(PREFS, 0);
+                    SharedPreferences.Editor editor = teacherToken.edit();
+                    editor.putString("token", token);
+                    editor.putString("login", resultTeacher.getLogin());
+                    editor.putString("password", resultTeacher.getPassword());
+                    editor.commit();
+
+//                    txtView.setText(resultTeacher.getToken() + ":" + resultTeacher.getName() + resultTeacher.getLogin() + ":" + resultTeacher.getPassword());
+                    startActivity(new Intent(MainActivity.this, FirstScreenActivity.class));
+
+                } else // if password or name or both are not correctly
+                {
+                    Toast.makeText(MainActivity.this, "Błędny login lub hasło", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
+            // Fail, for example if you don't have access to Wi-Fi
+            @Override
+            public void onFailure(Call<Teacher> call, Throwable t) {
+//                txtView.setText("Błąd, spróbuj ponownie");
+                progressDialog.dismiss();
+                Toast.makeText(MainActivity.this, "Błąd podczas łączenie z serwerem", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+
+    private void getTeacherFirstRun(Teacher teacher) {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Adress.getAdress()).addConverterFactory(GsonConverterFactory.create()).build();
+
+        TeacherRetrofitService teacherRetrofitService = retrofit.create(TeacherRetrofitService.class);
+
+
+        Call<Teacher> teacherCall = teacherRetrofitService.getTeacher(teacher.getLogin(), teacher.getPassword());
+
+        teacherCall.enqueue(new Callback<Teacher>() {
+            @Override
+            public void onResponse(Call<Teacher> call, Response<Teacher> response) {
+                progressDialogFirstRun.dismiss();
                 Teacher resultTeacher = response.body();
                 if (resultTeacher != null) // in case if you insert correct name and password
                 {
@@ -217,14 +281,12 @@ public class MainActivity extends AppCompatActivity {
                     editor.putString("token", token);
                     editor.commit();
 
-                    txtView.setText(resultTeacher.getToken() + ":" + resultTeacher.getName());
+//                    txtView.setText(resultTeacher.getToken() + ":" + resultTeacher.getName() + resultTeacher.getLogin() + ":" + resultTeacher.getPassword());
                     startActivity(new Intent(MainActivity.this, FirstScreenActivity.class));
 
-                } else // if password or name or both are not correctly
-                {
-                    Toast.makeText(((Activity)context), "Błędny login lub hasło", Toast.LENGTH_SHORT).show();
                 }
-                progressDialog.dismiss();
+
+
             }
 
 
@@ -232,8 +294,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Teacher> call, Throwable t) {
 //                txtView.setText("Błąd, spróbuj ponownie");
-                progressDialog.dismiss();
-                Toast.makeText(((Activity)context), "Błąd podczas łączenie z serwerem", Toast.LENGTH_SHORT).show();
+                progressDialogFirstRun.dismiss();
+                Toast.makeText(MainActivity.this, "Błąd podczas łączenie z serwerem", Toast.LENGTH_SHORT).show();
             }
         });
 

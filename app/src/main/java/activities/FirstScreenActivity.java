@@ -81,10 +81,11 @@ public class FirstScreenActivity extends AppCompatActivity {
         buttonLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences teacherToken = getSharedPreferences("PREFERENCE", Context.MODE_PRIVATE);
+                SharedPreferences teacherToken = getSharedPreferences(PREFS, 0);
                 SharedPreferences.Editor editor = teacherToken.edit();
                 editor.clear();
                 editor.commit();
+
 
                 startActivity(new Intent(FirstScreenActivity.this, MainActivity.class));
             }

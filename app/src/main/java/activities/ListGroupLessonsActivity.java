@@ -35,6 +35,7 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
     public static final String PREFS = "teacherToken";
 
     ImageButton buttonHome;
+    ImageButton buttonAdd;
     ListView listLessons;
     List<MiniLesson> listOfLessons;
     SharedPreferences teacherToken;
@@ -88,6 +89,7 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
 
 
         buttonHome = (ImageButton) findViewById(R.id.button_home);
+        buttonAdd = (ImageButton) findViewById(R.id.button_add);
         listLessons = (ListView) findViewById(R.id.list);
 
         listOfLessons = new ArrayList<>();
@@ -125,6 +127,23 @@ public class ListGroupLessonsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(ListGroupLessonsActivity.this, FirstScreenActivity.class));
+            }
+        });
+
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = teacherToken.edit();
+                editor.putString("token", token);
+                editor.commit();
+
+                Intent appInfo = new Intent(ListGroupLessonsActivity.this, AddLessonActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putLong("id", groupId);
+                appInfo.putExtras(bundle);
+
+                startActivity(appInfo);
             }
         });
     }
